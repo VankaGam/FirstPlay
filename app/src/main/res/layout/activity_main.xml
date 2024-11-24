@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#3772E7"
+    android:background="@color/blue_1"
     tools:context=".MainActivity">
 
   <FrameLayout
@@ -15,12 +15,12 @@
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Playlist maker"
-    android:textSize="22sp"
-    android:textColor="#FFFFFF"
-    android:layout_marginStart="16dp"
-    android:layout_marginBottom="16dp"
-    android:layout_marginTop="14dp"
+    android:text="@string/app_name"
+    android:textSize="@dimen/text_size_play"
+    android:textColor="@color/white"
+    android:layout_marginStart="@dimen/margin_start"
+    android:layout_marginBottom="@dimen/margin_bottom"
+    android:layout_marginTop="@dimen/margin_top"
     tools:ignore="HardcodedText" />
   </FrameLayout>
 
@@ -29,10 +29,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="28dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="24dp">
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginBottom="@dimen/button_icon_size_button"
+        android:layout_marginEnd="@dimen/margin_end"
+        android:layout_marginTop="@dimen/button_icon_size">
         <LinearLayout
             android:id="@+id/poisk"
             android:layout_width="match_parent"
@@ -40,21 +40,20 @@
             android:orientation="horizontal"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="@drawable/root_shape">
+            android:background="@drawable/root_shape"
+            style="@style/ButtonStyle">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="@dimen/button_icon_size"
+                android:layout_height="@dimen/button_icon_size"
+                android:layout_marginEnd="@dimen/margin_end_icon"
                 android:src="@drawable/vector12"
                 tools:ignore="ContentDescription" />
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Поиск"
-                android:textSize="22sp"
-                android:textColor="#1A1B22"
-                android:backgroundTint="#FFFFFF"
+                android:text="@string/search"
+                style="@style/TextStyleStart"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
         <LinearLayout
@@ -65,22 +64,21 @@
             android:layout_weight="1"
             android:gravity="center"
             android:background="@drawable/root_shape"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginTop="@dimen/margin_top"
+            android:layout_marginBottom="@dimen/margin_bottom"
+            style="@style/ButtonStyle">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="@dimen/button_icon_size"
+                android:layout_height="@dimen/button_icon_size"
+                android:layout_marginEnd="@dimen/margin_end_icon"
                 android:src="@drawable/vector13"
                 tools:ignore="ContentDescription" />
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Медиатека"
-                android:textSize="22sp"
-                android:textColor="#1A1B22"
-                android:backgroundTint="#FFFFFF"
+                android:text="@string/media_library"
+                style="@style/TextStyleStart"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
         <LinearLayout
@@ -90,21 +88,20 @@
             android:orientation="horizontal"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="@drawable/root_shape">
+            android:background="@drawable/root_shape"
+            style="@style/ButtonStyle">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="@dimen/button_icon_size"
+                android:layout_height="@dimen/button_icon_size"
+                android:layout_marginEnd="@dimen/margin_end_icon"
                 android:src="@drawable/vector14"
                 tools:ignore="ContentDescription" />
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Настройки"
-                android:textSize="22sp"
-                android:textColor="#1A1B22"
-                android:backgroundTint="#FFFFFF"
+                android:text="@string/settings"
+                style="@style/TextStyleStart"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
     </LinearLayout>

@@ -22,8 +22,6 @@ class SettingActivity : AppCompatActivity() {
             insets
         }
         backButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
             finish()
         }
     }

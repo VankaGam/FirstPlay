@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_start">16dp</dimen>
+    <dimen name="margin_bottom">16dp</dimen>
+    <dimen name="margin_top">16dp</dimen>
+    <dimen name="margin_end">16dp</dimen>
+    <dimen name="margin_end_icon">8dp</dimen>
+    <dimen name="button_icon_size">24dp</dimen>
+    <dimen name="button_icon_size_button">28dp</dimen>
+    <dimen name="text_size_play">22sp</dimen>
+    <dimen name="margin_bottom_setting">24dp</dimen>
+    <dimen name="layout_width_back">48dp</dimen>
+    <dimen name="margin_bottom_back">4dp</dimen>
+    <dimen name="layout_margin_setting">21dp</dimen>
+</resources>

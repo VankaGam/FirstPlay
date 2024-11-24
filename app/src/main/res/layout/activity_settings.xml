@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#ffffff"
+    android:background="@color/white"
     tools:context=".SettingActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="@dimen/margin_bottom_setting">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,25 +23,26 @@
 
             <ImageButton
                 android:id="@+id/back"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/layout_width_back"
+                android:layout_height="@dimen/layout_width_back"
                 android:src="@drawable/baseline_arrow_back_24"
                 android:scaleType="centerCrop"
-                android:drawablePadding="4dp"
-                android:backgroundTint="#ffffff"
-                app:cornerRadius="0dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
+                android:drawablePadding="@dimen/margin_bottom_back"
+                android:backgroundTint="@color/white"
+                android:layout_marginStart="@dimen/margin_bottom_back"
+                android:layout_marginTop="@dimen/margin_bottom_back"
+                android:layout_marginBottom="@dimen/margin_bottom_back"
                 tools:ignore="ContentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Настройки"
-                android:textSize="22sp"
-                android:textColor="#1A1B22"
-                android:layout_marginStart="12dp"
-                tools:ignore="HardcodedText" />
+                android:text="@string/settings"
+                style="@style/TextStyleSetting"
+                android:layout_marginStart="@dimen/margin_start"
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_marginBottom="@dimen/margin_bottom"
+                tools:ignore="HardcodedText"/>
         </LinearLayout>
     </FrameLayout>
 
@@ -52,29 +53,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             tools:ignore="UselessParent">
 
             <TextView
+                style="@style/TextStyle_menu"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Темная тема"
-                android:textSize="16sp"
-                android:textColor="#1A1B22"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/margin_start"
+                android:layout_marginTop="@dimen/layout_margin_setting"
+                android:layout_marginBottom="@dimen/layout_margin_setting"
+                android:layout_weight="1"
+                android:text="@string/black_theme"
                 tools:ignore="HardcodedText" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/controlp"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:backgroundTint="#ffffff"
-                android:scaleType="centerCrop"
-                android:drawablePadding="4dp"
-                app:cornerRadius="0dp"
+                android:layout_width="56dp"
+                android:layout_height="40dp"
                 android:layout_marginEnd="6dp"
+                android:backgroundTint="@color/white"
+                android:drawablePadding="4dp"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
     </FrameLayout>
@@ -91,24 +91,24 @@
             tools:ignore="UselessParent">
 
             <TextView
+                style="@style/TextStyle_menu"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Поделиться приложением"
-                android:textSize="16sp"
-                android:textColor="#1A1B22"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/margin_start"
+                android:layout_marginTop="@dimen/layout_margin_setting"
+                android:layout_marginBottom="@dimen/layout_margin_setting"
+                android:layout_weight="1"
+                android:text="@string/to_share"
                 tools:ignore="HardcodedText" />
 
             <ImageButton
                 android:id="@+id/vector"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/vector"
                 android:scaleType="centerCrop"
                 android:drawablePadding="4dp"
-                android:backgroundTint="#ffffff"
-                app:cornerRadius="0dp"
+                android:backgroundTint="@color/white"
                 android:layout_marginEnd="6dp"
                 tools:ignore="ContentDescription" />
 
@@ -130,21 +130,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Написать в поддержку"
-                android:textSize="16sp"
-                android:textColor="#1A1B22"
-                android:layout_marginStart="16dp"
+                android:text="@string/to_write"
+                style="@style/TextStyle_menu"
+                android:layout_marginStart="@dimen/margin_start"
+                android:layout_marginBottom="@dimen/layout_margin_setting"
+                android:layout_marginTop="@dimen/layout_margin_setting"
                 tools:ignore="HardcodedText" />
 
             <ImageButton
                 android:id="@+id/light_mode1"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/light_mode1"
                 android:scaleType="centerCrop"
                 android:drawablePadding="4dp"
-                android:backgroundTint="#ffffff"
-                app:cornerRadius="0dp"
+                android:backgroundTint="@color/white"
                 android:layout_marginEnd="6dp"
                 tools:ignore="ContentDescription" />
 
@@ -166,21 +166,21 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Пользовательское соглашение"
-                android:textSize="16sp"
-                android:textColor="#1A1B22"
-                android:layout_marginStart="16dp"
+                android:text="@string/agrement"
+                style="@style/TextStyle_menu"
+                android:layout_marginStart="@dimen/margin_start"
+                android:layout_marginTop="@dimen/layout_margin_setting"
+                android:layout_marginBottom="@dimen/layout_margin_setting"
                 tools:ignore="HardcodedText" />
 
             <ImageButton
                 android:id="@+id/light_mode2"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/light_mode2"
                 android:scaleType="centerCrop"
                 android:drawablePadding="4dp"
-                android:backgroundTint="#ffffff"
-                app:cornerRadius="0dp"
+                android:backgroundTint="@color/white"
                 android:layout_marginEnd="6dp"
                 tools:ignore="ContentDescription" />
 

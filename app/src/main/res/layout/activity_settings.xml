@@ -72,9 +72,8 @@
                 android:id="@+id/controlp"
                 android:layout_width="56dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="@dimen/margin_setting_end"
                 android:backgroundTint="@color/white"
-                android:drawablePadding="4dp"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
     </FrameLayout>
@@ -103,13 +102,11 @@
 
             <ImageButton
                 android:id="@+id/vector"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/vector"
-                android:scaleType="centerCrop"
-                android:drawablePadding="4dp"
+                android:layout_width="@dimen/margin_bottom_setting"
+                android:layout_height="@dimen/margin_bottom_setting"
+                android:src="@drawable/vectorshare"
                 android:backgroundTint="@color/white"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="@dimen/margin_setting_end"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>
@@ -139,13 +136,11 @@
 
             <ImageButton
                 android:id="@+id/light_mode1"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/light_mode1"
-                android:scaleType="centerCrop"
-                android:drawablePadding="4dp"
+                android:layout_width="@dimen/margin_bottom_setting"
+                android:layout_height="@dimen/margin_bottom_setting"
+                android:src="@drawable/group"
                 android:backgroundTint="@color/white"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="@dimen/margin_setting_end"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>
@@ -175,13 +170,11 @@
 
             <ImageButton
                 android:id="@+id/light_mode2"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/light_mode2"
-                android:scaleType="centerCrop"
-                android:drawablePadding="4dp"
+                android:layout_width="@dimen/margin_bottom_setting"
+                android:layout_height="@dimen/margin_bottom_setting"
+                android:src="@drawable/back"
                 android:backgroundTint="@color/white"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="@dimen/margin_setting_end"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>

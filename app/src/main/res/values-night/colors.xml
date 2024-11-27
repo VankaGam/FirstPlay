@@ -9,4 +9,5 @@
     <color name="blue_1">#000000</color>
     <color name="whiteStart">#FFFFFFFF</color>
     <color name="blackStart">#000000</color>
+    <color name="iconSetting">#FFFFFF</color>
 </resources>

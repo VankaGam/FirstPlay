@@ -41,8 +41,7 @@
                 style="@style/TextStyleSetting"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="@dimen/margin_top"
-                android:layout_marginBottom="@dimen/margin_bottom"
-                tools:ignore="HardcodedText"/>
+                android:layout_marginBottom="@dimen/margin_bottom" />
         </LinearLayout>
     </FrameLayout>
 
@@ -65,8 +64,7 @@
                 android:layout_marginTop="@dimen/layout_margin_setting"
                 android:layout_marginBottom="@dimen/layout_margin_setting"
                 android:layout_weight="1"
-                android:text="@string/black_theme"
-                tools:ignore="HardcodedText" />
+                android:text="@string/black_theme" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/controlp"
@@ -97,8 +95,7 @@
                 android:layout_marginTop="@dimen/layout_margin_setting"
                 android:layout_marginBottom="@dimen/layout_margin_setting"
                 android:layout_weight="1"
-                android:text="@string/to_share"
-                tools:ignore="HardcodedText" />
+                android:text="@string/to_share" />
 
             <ImageButton
                 android:id="@+id/vector"
@@ -131,8 +128,7 @@
                 style="@style/TextStyle_menu"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginBottom="@dimen/layout_margin_setting"
-                android:layout_marginTop="@dimen/layout_margin_setting"
-                tools:ignore="HardcodedText" />
+                android:layout_marginTop="@dimen/layout_margin_setting" />
 
             <ImageButton
                 android:id="@+id/light_mode1"
@@ -165,8 +161,7 @@
                 style="@style/TextStyle_menu"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="@dimen/layout_margin_setting"
-                android:layout_marginBottom="@dimen/layout_margin_setting"
-                tools:ignore="HardcodedText" />
+                android:layout_marginBottom="@dimen/layout_margin_setting" />
 
             <ImageButton
                 android:id="@+id/light_mode2"

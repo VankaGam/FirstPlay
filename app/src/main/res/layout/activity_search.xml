@@ -52,29 +52,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_background"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_start"
+            android:layout_marginEnd="@dimen/margin_end"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:paddingVertical="24dp" />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
             <ImageView
-                android:layout_width="@dimen/margin_top"
-                android:layout_height="@dimen/margin_bottom"
-                android:layout_marginStart="@dimen/button_icon_size_button"
-                android:layout_marginEnd="@dimen/margin_end_icon"
-                android:layout_gravity="center_vertical"
+                style="@style/IconSearch"
                 android:src="@drawable/search_vector" />
-
             <EditText
-                android:layout_width="match_parent"
+                android:id="@+id/searchEditText"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:inputType="text"
                 style="@style/TextStyleSearch"
-                android:text="@string/search" />
+                android:hint="@string/search" />
+            <ImageView
+                android:id="@+id/clearButton"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/close_text"
+                android:visibility="gone"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="24dp"
+                android:layout_gravity="center_vertical" />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

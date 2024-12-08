@@ -76,7 +76,7 @@ class SettingActivity : AppCompatActivity() {
         if (emailIntent.resolveActivity(packageManager) != null) {
             startActivity(emailIntent)
         } else {
-            Toast.makeText(this, "???????", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -88,7 +88,7 @@ class SettingActivity : AppCompatActivity() {
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
         } else {
-            Toast.makeText(this, "?????????!!!!!!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "!!", Toast.LENGTH_SHORT).show()
         }
     }
     private fun updateTheme(isDarkTheme: Boolean) {

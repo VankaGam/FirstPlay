@@ -10,4 +10,7 @@
     <color name="whiteStart">#FFFFFFFF</color>
     <color name="blackStart">#000000</color>
     <color name="iconSetting">#FFFFFF</color>
+    <color name="textSearch">#000000</color>
+    <color name="iconSearch">#000000</color>
+    <color name="search_hint_color">#000000</color>
 </resources>

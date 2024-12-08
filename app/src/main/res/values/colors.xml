@@ -12,6 +12,7 @@
     <color name="whiteStart">#FFFFFFFF</color>
     <color name="blackStart">#000000</color>
     <color name="iconSetting">#AEAFB4</color>
-
-
+    <color name="textSearch">#AEAFB4</color>
+    <color name="iconSearch">#AEAFB4</color>
+    <color name="search_hint_color">#AEAFB4</color>
 </resources>

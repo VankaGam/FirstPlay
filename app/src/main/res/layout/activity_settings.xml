@@ -10,16 +10,11 @@
     tools:context=".SettingActivity">
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/FrameStyle"
         android:layout_marginBottom="@dimen/margin_bottom_setting">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            tools:ignore="UselessParent">
+            style="@style/LinerStyle">
 
             <ImageButton
                 android:id="@+id/back"
@@ -46,30 +41,20 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/FrameStyle">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
+            style="@style/LinerStyle">
 
             <TextView
                 style="@style/TextStyle_menu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_start"
-                android:layout_marginTop="@dimen/layout_margin_setting"
-                android:layout_marginBottom="@dimen/layout_margin_setting"
                 android:layout_weight="1"
-                android:text="@string/black_theme" />
+                android:text="@string/black_theme"/>
 
             <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/controlp"
-                android:layout_width="56dp"
-                android:layout_height="40dp"
                 android:layout_marginEnd="@dimen/margin_setting_end"
                 android:backgroundTint="@color/white"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -77,100 +62,58 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/FrameStyle">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            tools:ignore="UselessParent">
+            style="@style/LinerStyle">
 
             <TextView
                 style="@style/TextStyle_menu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_start"
-                android:layout_marginTop="@dimen/layout_margin_setting"
-                android:layout_marginBottom="@dimen/layout_margin_setting"
                 android:layout_weight="1"
                 android:text="@string/to_share" />
 
             <ImageButton
                 android:id="@+id/vectorShare"
-                android:layout_width="@dimen/margin_bottom_setting"
-                android:layout_height="@dimen/margin_bottom_setting"
-                android:src="@drawable/vectorshare"
-                android:backgroundTint="@color/white"
-                android:layout_marginEnd="@dimen/margin_setting_end"
-                tools:ignore="ContentDescription" />
+                style="@style/IconStyleButton"
+                android:src="@drawable/vectorshare" />
 
         </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/FrameStyle">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            tools:ignore="UselessParent">
+            style="@style/LinerStyle">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/to_write"
-                style="@style/TextStyle_menu"
-                android:layout_marginStart="@dimen/margin_start"
-                android:layout_marginBottom="@dimen/layout_margin_setting"
-                android:layout_marginTop="@dimen/layout_margin_setting" />
+                style="@style/TextStyle_menu" />
 
             <ImageButton
                 android:id="@+id/support"
-                android:layout_width="@dimen/margin_bottom_setting"
-                android:layout_height="@dimen/margin_bottom_setting"
-                android:src="@drawable/group"
-                android:backgroundTint="@color/white"
-                android:layout_marginEnd="@dimen/margin_setting_end"
-                tools:ignore="ContentDescription" />
+                style="@style/IconStyleButton"
+                android:src="@drawable/group" />
 
         </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/FrameStyle">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            tools:ignore="UselessParent">
+            style="@style/LinerStyle">
 
             <TextView
-                android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
                 android:text="@string/agrement"
-                style="@style/TextStyle_menu"
-                android:layout_marginStart="@dimen/margin_start"
-                android:layout_marginTop="@dimen/layout_margin_setting"
-                android:layout_marginBottom="@dimen/layout_margin_setting" />
+                style="@style/TextStyle_menu" />
 
             <ImageButton
                 android:id="@+id/agreement"
-                android:layout_width="@dimen/margin_bottom_setting"
-                android:layout_height="@dimen/margin_bottom_setting"
-                android:src="@drawable/back"
-                android:backgroundTint="@color/white"
-                android:layout_marginEnd="@dimen/margin_setting_end"
-                tools:ignore="ContentDescription" />
+                style="@style/IconStyleButton"
+                android:src="@drawable/back" />
 
         </LinearLayout>
     </FrameLayout>

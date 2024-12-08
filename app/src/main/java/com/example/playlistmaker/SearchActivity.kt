@@ -3,7 +3,6 @@ package com.example.playlistmaker
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -18,6 +17,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton
     private lateinit var searchEditText: EditText
     private lateinit var clearButton: ImageView
+    private var searchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +27,11 @@ class SearchActivity : AppCompatActivity() {
         initViews()
         setListeners()
         setupWindowInsets()
+
+        if (savedInstanceState != null) {
+            searchQuery = savedInstanceState.getString("search_query")
+            searchEditText.setText(searchQuery)
+        }
     }
 
     private fun initViews() {
@@ -54,18 +59,14 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateClearButtonVisibility(s)
             }
-            override fun afterTextChanged(s: Editable?) {}
-        })
 
-        searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+            override fun afterTextChanged(s: Editable?) {
+                searchQuery = s.toString()
             }
-            override fun afterTextChanged(s: Editable?) {}
         })
     }
 
@@ -86,5 +87,16 @@ class SearchActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val inputMethodManager = getSystemService(InputMethodManager::class.java)
         inputMethodManager.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("search_query", searchQuery)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        searchQuery = savedInstanceState.getString("search_query")
+        searchEditText.setText(searchQuery)
     }
 }

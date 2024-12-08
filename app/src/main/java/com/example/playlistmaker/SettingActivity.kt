@@ -3,9 +3,7 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -59,7 +57,7 @@ class SettingActivity : AppCompatActivity() {
             writeToSupport()
         }
         termsButton.setOnClickListener {
-            openTermsOfService()
+            openService()
         }
     }
 
@@ -80,7 +78,7 @@ class SettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun openTermsOfService() {
+    private fun openService() {
         val url = "https://yandex.ru/legal/practicum_offer/"
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse(url)

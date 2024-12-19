@@ -3,6 +3,7 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -62,9 +63,11 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun writeToSupport() {
-        val emailAddress = "lumiamicrosoft@yandex.ru"
-        val subject = "Сообщение разработчикам и разработчицам приложения Playlist Maker"
-        val body = "Спасибо разработчикам и разработчицам за крутое приложение!"
+        val emailAddress = getString(R.string.email)
+        val subject = getString(R.string.subject)
+        val body = getString(R.string.body)
+
+        Log.d("SettingActivity", "Email: $emailAddress\nSubject: $subject\nBody: $body")
 
         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:$emailAddress")
@@ -72,20 +75,26 @@ class SettingActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_TEXT, body)
         }
         if (emailIntent.resolveActivity(packageManager) != null) {
+            Log.d("SettingActivity", "Starting email activity")
             startActivity(emailIntent)
         } else {
+            Log.e("SettingActivity", "No email app available")
             Toast.makeText(this, "!", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun openService() {
-        val url = "https://yandex.ru/legal/practicum_offer/"
+        val url = getString(R.string.android_ofter_url)
+        Log.d("SettingActivity", "Opening URL: $url")
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse(url)
         }
         if (intent.resolveActivity(packageManager) != null) {
+            Log.d("SettingActivity", "Starting web browser")
             startActivity(intent)
         } else {
+            Log.e("SettingActivity", "No browser app available")
+
             Toast.makeText(this, "!!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -97,13 +106,14 @@ class SettingActivity : AppCompatActivity() {
         }
     }
     private fun shareApp() {
-        val message = "Курс по Андроид-разработке! \nhttps://practicum.yandex.ru/profile/android-developer-plus/"
+        val message = getString(R.string.android_development_course)
+        val shareIt = getString(R.string.share_via)
 
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, message)
             type = "text/plain"
         }
-        startActivity(Intent.createChooser(shareIntent, "Поделиться приложением через"))
+        startActivity(Intent.createChooser(shareIntent, shareIt))
     }
 }

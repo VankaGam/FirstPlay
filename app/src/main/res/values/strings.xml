@@ -7,5 +7,13 @@
     <string name="to_share">Поделиться приложением</string>
     <string name="to_write">Написать в поддержку</string>
     <string name="agrement">Пользовательское соглашение</string>
-
+    <string name="android_course_url">https://practicum.yandex.ru/profile/android-developer-plus/</string>
+    <string name="email">lumiamicrosoft@yandex.ru</string>
+    <string name="subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="body">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="offer_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="share_via">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="android_development_course">Курс по Андроид-разработке!
+https://practicum.yandex.ru/profile/android-developer-plus/</string>
+    <string name="android_ofter_url">https://yandex.ru/legal/practicum_offer/</string>
 </resources>

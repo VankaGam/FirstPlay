@@ -71,7 +71,7 @@ class SettingActivity : AppCompatActivity() {
         Log.d("SettingActivity", "Email: $emailAddress\nSubject: $subject\nBody: $body")
 
         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:$emailAddress")
+            data = Uri.parse("mailto:")
             putExtra(Intent.EXTRA_EMAIL, arrayOf(emailAddress))
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, body)

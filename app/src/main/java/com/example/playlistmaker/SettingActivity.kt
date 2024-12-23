@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.net.URLEncoder
 
 class SettingActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton
@@ -64,20 +65,21 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun writeToSupport() {
-        val emailAddress = getString(R.string.email)
-        val subject = getString(R.string.subject)
-        val body = getString(R.string.body)
+        val emailAddress = getString(R.string.email).trim()
+        val subject = getString(R.string.subject).trim()
+        val body = getString(R.string.body).trim()
 
         Log.d("SettingActivity", "Email: $emailAddress\nSubject: $subject\nBody: $body")
+        val uriText = "mailto:$emailAddress" +
+                "?subject=$subject&body=$body"
 
         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(emailAddress))
-            putExtra(Intent.EXTRA_SUBJECT, subject)
-            putExtra(Intent.EXTRA_TEXT, body)
+            data = Uri.parse(uriText)
         }
+
         if (emailIntent.resolveActivity(packageManager) != null) {
             Log.d("SettingActivity", "Starting email activity")
+            Log.d("SettingActivity", "Email: $emailAddress, Subject: $subject, Body: $body")
             startActivity(emailIntent)
         } else {
             Log.e("SettingActivity", "No email app available")

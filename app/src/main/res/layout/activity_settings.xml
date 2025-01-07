@@ -40,9 +40,6 @@
         </LinearLayout>
     </FrameLayout>
 
-    <FrameLayout
-        style="@style/FrameStyle">
-
         <LinearLayout
             style="@style/LinerStyle">
 
@@ -59,12 +56,9 @@
                 android:backgroundTint="@color/white"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameStyle">
 
         <LinearLayout
+            android:id="@+id/share"
             style="@style/LinerStyle">
 
             <TextView
@@ -78,12 +72,9 @@
                 android:src="@drawable/vectorshare" />
 
         </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameStyle">
 
         <LinearLayout
+            android:id="@+id/support"
             style="@style/LinerStyle">
 
             <TextView
@@ -92,17 +83,14 @@
                 style="@style/TextStyle_menu" />
 
             <ImageButton
-                android:id="@+id/support"
+                android:id="@+id/supportVector"
                 style="@style/IconStyleButton"
                 android:src="@drawable/group" />
 
         </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameStyle">
 
         <LinearLayout
+            android:id="@+id/agreement"
             style="@style/LinerStyle">
 
             <TextView
@@ -111,11 +99,10 @@
                 style="@style/TextStyle_menu" />
 
             <ImageButton
-                android:id="@+id/agreement"
+                android:id="@+id/agreementVector"
                 style="@style/IconStyleButton"
                 android:src="@drawable/back" />
 
         </LinearLayout>
-    </FrameLayout>
 
 </LinearLayout>

@@ -13,4 +13,6 @@
     <color name="textSearch">#000000</color>
     <color name="iconSearch">#000000</color>
     <color name="search_hint_color">#000000</color>
+    <color name="color_gray">#FFFFFF</color>
+    <color name="color_black">#FFFFFF</color>
 </resources>

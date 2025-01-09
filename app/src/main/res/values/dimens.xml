@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_start">16dp</dimen>
+    <dimen name="margin_bottom">16dp</dimen>
+    <dimen name="margin_top">16dp</dimen>
+    <dimen name="margin_end">16dp</dimen>
+    <dimen name="margin_end_icon">8dp</dimen>
+    <dimen name="button_icon_size">24dp</dimen>
+    <dimen name="button_icon_size_button">28dp</dimen>
+    <dimen name="text_size_play">22sp</dimen>
+    <dimen name="margin_bottom_setting">24dp</dimen>
+    <dimen name="layout_width_back">48dp</dimen>
+    <dimen name="margin_bottom_back">4dp</dimen>
+    <dimen name="layout_margin_setting">21dp</dimen>
+    <dimen name="margin_setting_end">12dp</dimen>
+    <dimen name="layout_width_item">45dp</dimen>
+    <dimen name="layout_height_item">45dp</dimen>
+    <dimen name="margin_end_item">8dp</dimen>
+    <dimen name="margin_end_ellipse">5dp</dimen>
+    <dimen name="margin_start_ellipse">5dp</dimen>
+    <dimen name="margin_bottom_item">1dp</dimen>
+    <dimen name="margin_start_layout_item">13dp</dimen>
+    <dimen name="margin_top_layout_item">8dp</dimen>
+    <dimen name="margin_bottom_layout_item">8dp</dimen>
+    <dimen name="margin_end_layout_item">20dp</dimen>
+</resources>

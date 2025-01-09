@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.net.URLEncoder
 
 class SettingActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton

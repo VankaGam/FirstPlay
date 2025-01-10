@@ -125,7 +125,7 @@ class SettingActivity : AppCompatActivity() {
             .setMessage("Установите приложение для почты из Play Market.")
             .setPositiveButton("Перейти в Play Market") { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse("market://details?id=com.google.android.gm") // Gmail
+                    data = Uri.parse("market://details?id=com.google.android.gm")
                 }
                 startActivity(intent)
             }
@@ -139,7 +139,7 @@ class SettingActivity : AppCompatActivity() {
             .setMessage("Установите веб-браузер из Play Market.")
             .setPositiveButton("Перейти в Play Market") { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse("market://details?id=com.android.chrome") // Google Chrome
+                    data = Uri.parse("market://details?id=com.android.chrome")
                 }
                 startActivity(intent)
             }

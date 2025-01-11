@@ -1,4 +1,4 @@
-package com.example.playlistmaker.adapter
+package com.example.playlistmaker
 
 import com.bumptech.glide.Glide
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
 import model.Track
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>(), Filterable {
 
@@ -29,7 +29,7 @@ class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<Track
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
-                .centerCrop()
+                .transform(RoundedCorners(4))
                 .into(trackImageView)
         }
     }

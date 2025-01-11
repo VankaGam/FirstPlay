@@ -15,4 +15,6 @@
     <color name="search_hint_color">#000000</color>
     <color name="color_gray">#FFFFFF</color>
     <color name="color_black">#FFFFFF</color>
+    <color name="color_background">#1A1B22</color>
+    <color name="color_background_start_activity">#1A1B22</color>
 </resources>

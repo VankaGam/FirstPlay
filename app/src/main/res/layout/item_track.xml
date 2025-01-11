@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/LayoutStyleItem">
 
+
     <ImageView
         android:id="@+id/imageView"
         style="@style/IconStyleItem"
-        android:src="@drawable/view_track"/>
+        android:src="@drawable/view_track" />
     <LinearLayout
         style="@style/LinerLayoutStyleTrackAndArtist"
         android:layout_weight="1">

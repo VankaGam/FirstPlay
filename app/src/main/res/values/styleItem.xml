@@ -39,7 +39,7 @@
         <item name="android:layout_width">@dimen/layout_width_item</item>
         <item name="android:layout_height">@dimen/layout_height_item</item>
         <item name="android:layout_marginEnd">@dimen/margin_end_item</item>
-        <item name="background">@drawable/rounded_corners</item>
+        <item name="android:scaleType">centerCrop</item>
     </style>
     <style name="EllipseStyleItem">
         <item name="android:layout_width">match_parent</item>

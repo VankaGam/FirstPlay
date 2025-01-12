@@ -12,17 +12,31 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import model.TrackRepository
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton
     private lateinit var searchEditText: EditText
     private lateinit var clearButton: ImageView
     private var searchQuery: String? = null
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: TrackAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
+
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val trackRepository = TrackRepository()
+        val tracks = trackRepository.getSampleTracks()
+
+        adapter = TrackAdapter(tracks)
+        recyclerView.adapter = adapter
 
         initViews()
         setListeners()

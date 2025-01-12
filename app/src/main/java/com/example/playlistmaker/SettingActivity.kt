@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,8 +18,8 @@ import java.net.URLEncoder
 class SettingActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton
     private lateinit var themeSwitch: SwitchCompat
-    private lateinit var supportButton: ImageButton
-    private lateinit var termsButton: ImageButton
+    private lateinit var supportButton: LinearLayout
+    private lateinit var termsButton: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +51,7 @@ class SettingActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val shareButton: ImageButton = findViewById(R.id.vectorShare)
+        val shareButton: LinearLayout = findViewById(R.id.share)
         shareButton.setOnClickListener {
             shareApp()
         }
@@ -72,7 +72,6 @@ class SettingActivity : AppCompatActivity() {
         Log.d("SettingActivity", "Email: $emailAddress\nSubject: $subject\nBody: $body")
         val uriText = "mailto:$emailAddress" +
                 "?subject=$subject&body=$body"
-
         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse(uriText)
         }
@@ -126,7 +125,7 @@ class SettingActivity : AppCompatActivity() {
             .setMessage("Установите приложение для почты из Play Market.")
             .setPositiveButton("Перейти в Play Market") { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse("market://details?id=com.google.android.gm") // Gmail
+                    data = Uri.parse("market://details?id=com.google.android.gm")
                 }
                 startActivity(intent)
             }
@@ -140,7 +139,7 @@ class SettingActivity : AppCompatActivity() {
             .setMessage("Установите веб-браузер из Play Market.")
             .setPositiveButton("Перейти в Play Market") { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse("market://details?id=com.android.chrome") // Google Chrome
+                    data = Uri.parse("market://details?id=com.android.chrome")
                 }
                 startActivity(intent)
             }

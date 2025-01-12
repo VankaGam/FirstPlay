@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/color_background"
     tools:context=".SettingActivity">
 
     <FrameLayout
@@ -23,7 +23,7 @@
                 android:src="@drawable/baseline_arrow_back_24"
                 android:scaleType="centerCrop"
                 android:drawablePadding="@dimen/margin_bottom_back"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@color/color_background"
                 android:layout_marginStart="@dimen/margin_bottom_back"
                 android:layout_marginTop="@dimen/margin_bottom_back"
                 android:layout_marginBottom="@dimen/margin_bottom_back"
@@ -39,9 +39,6 @@
                 android:layout_marginBottom="@dimen/margin_bottom" />
         </LinearLayout>
     </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameStyle">
 
         <LinearLayout
             style="@style/LinerStyle">
@@ -59,12 +56,9 @@
                 android:backgroundTint="@color/white"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameStyle">
 
         <LinearLayout
+            android:id="@+id/share"
             style="@style/LinerStyle">
 
             <TextView
@@ -78,12 +72,9 @@
                 android:src="@drawable/vectorshare" />
 
         </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameStyle">
 
         <LinearLayout
+            android:id="@+id/support"
             style="@style/LinerStyle">
 
             <TextView
@@ -92,17 +83,14 @@
                 style="@style/TextStyle_menu" />
 
             <ImageButton
-                android:id="@+id/support"
+                android:id="@+id/supportVector"
                 style="@style/IconStyleButton"
                 android:src="@drawable/group" />
 
         </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameStyle">
 
         <LinearLayout
+            android:id="@+id/agreement"
             style="@style/LinerStyle">
 
             <TextView
@@ -111,11 +99,10 @@
                 style="@style/TextStyle_menu" />
 
             <ImageButton
-                android:id="@+id/agreement"
+                android:id="@+id/agreementVector"
                 style="@style/IconStyleButton"
                 android:src="@drawable/back" />
 
         </LinearLayout>
-    </FrameLayout>
 
 </LinearLayout>

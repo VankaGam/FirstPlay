@@ -5,9 +5,10 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
     android:orientation="vertical"
-    android:background="@color/white"
     tools:context=".SearchActivity">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -15,33 +16,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             tools:ignore="UselessParent">
 
             <ImageButton
                 android:id="@+id/back"
                 android:layout_width="@dimen/layout_width_back"
                 android:layout_height="@dimen/layout_width_back"
-                android:src="@drawable/baseline_arrow_back_24"
-                android:scaleType="centerCrop"
-                android:drawablePadding="@dimen/margin_bottom_back"
-                android:backgroundTint="@color/white"
                 android:layout_marginStart="@dimen/margin_bottom_back"
                 android:layout_marginTop="@dimen/margin_bottom_back"
                 android:layout_marginBottom="@dimen/margin_bottom_back"
-                tools:ignore="ContentDescription" />
+                android:backgroundTint="@color/color_background"
+                android:drawablePadding="@dimen/margin_bottom_back"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_arrow_back_24" />
 
             <TextView
+                style="@style/TextStyleSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/search"
-                style="@style/TextStyleSetting"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="@dimen/margin_top"
-                android:layout_marginBottom="@dimen/margin_bottom" />
+                android:layout_marginBottom="@dimen/margin_bottom"
+                android:text="@string/search" />
         </LinearLayout>
     </FrameLayout>
+
     <FrameLayout
         android:id="@+id/search_menu"
         android:layout_width="match_parent"
@@ -51,38 +52,48 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_background"
             android:layout_marginStart="@dimen/margin_start"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="@dimen/margin_end"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
+            android:background="@drawable/edittext_background"
             android:paddingVertical="24dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <ImageView
                 style="@style/IconSearch"
                 android:src="@drawable/search_vector" />
+
             <EditText
                 android:id="@+id/searchEditText"
-                android:layout_weight="1"
+                style="@style/TextStyleSearch"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:inputType="text"
-                style="@style/TextStyleSearch"
-                android:hint="@string/search" />
+                android:hint="@string/search"
+                android:inputType="text" />
+
             <ImageView
                 android:id="@+id/clearButton"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/close_text"
-                android:visibility="gone"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="6dp"
                 android:layout_marginEnd="24dp"
-                android:layout_gravity="center_vertical" />
+                android:src="@drawable/close_text"
+                android:visibility="gone" />
         </LinearLayout>
     </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:listitem="@layout/item_track"/>
 </LinearLayout>

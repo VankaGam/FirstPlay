@@ -17,4 +17,6 @@
     <color name="color_black">#FFFFFF</color>
     <color name="color_background">#1A1B22</color>
     <color name="color_background_start_activity">#1A1B22</color>
+    <color name="color_error_image">#FFFFFF</color>
+    <color name="black_text_search">#000000</color>
 </resources>

@@ -77,7 +77,9 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="@string/search"
-                android:inputType="text" />
+                android:inputType="text"
+                android:imeOptions="actionDone"
+                android:singleLine="true"/>
 
             <ImageView
                 android:id="@+id/clearButton"
@@ -90,10 +92,55 @@
                 android:visibility="gone" />
         </LinearLayout>
     </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/errorPlaceholder"
+        style="@style/error_placholder_style"
+        android:visibility="gone">
+
+        <ImageView
+            style="@style/error_internet_image_style"
+            android:src="@drawable/error_internet" />
+
+        <TextView
+            style="@style/error_internet_text_style"
+            android:text="@string/error_internet_text" />
+
+        <TextView
+            android:id="@+id/refresh_button"
+            style="@style/refresh_button_style"
+            android:text="@string/refresh_button_text"/>
+
+    </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/emptyPlaceholder"
+        style="@style/error_placholder_style"
+        android:visibility="gone">
+        <ImageView
+            style="@style/error_search_image_style"
+            android:src="@drawable/error_search"/>
+        <TextView
+            style="@style/error_search_text_style"
+            android:text="@string/error_search_text" />
+
+    </LinearLayout>
+    </ScrollView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         tools:listitem="@layout/item_track"/>
+
 </LinearLayout>

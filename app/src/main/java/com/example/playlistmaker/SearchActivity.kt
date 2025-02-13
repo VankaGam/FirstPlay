@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import SearchHistory
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,6 +25,7 @@ import model.TrackRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.core.view.isVisible
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -36,6 +38,7 @@ class SearchActivity : AppCompatActivity() {
     private var tracks: List<Track> = emptyList()
     private val trackRepository = TrackRepository()
     private var lastSearchTerm: String? = null
+    private lateinit var searchHistory: SearchHistory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,10 +48,12 @@ class SearchActivity : AppCompatActivity() {
         initViews()
         setListeners()
         setupWindowInsets()
+        searchHistory = SearchHistory(this)
+        updateHistoryVisibility()
 
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = TrackAdapter(tracks)
+        adapter = TrackAdapter(tracks) { track -> searchHistory.addTrack(track) }
         recyclerView.adapter = adapter
 
         if (savedInstanceState != null) {
@@ -86,12 +91,23 @@ class SearchActivity : AppCompatActivity() {
                 false
             }
         }
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchEditText.text.isEmpty()) {
+                updateHistoryVisibility()
+            } else {
+                findViewById<LinearLayout>(R.id.historyContainer).visibility = View.GONE
+                findViewById<TextView>(R.id.clearHistoryButton).visibility = View.GONE
+            }
+        }
 
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateClearButtonVisibility(s)
+                if (searchEditText.hasFocus()) {
+                    updateHistoryVisibility()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -101,6 +117,10 @@ class SearchActivity : AppCompatActivity() {
             lastSearchTerm?.let { term ->
                 performSearch(term)
             }
+        }
+        findViewById<TextView>(R.id.clearHistoryButton).setOnClickListener {
+            searchHistory.clearHistory()
+            updateHistoryVisibility()
         }
     }
 
@@ -117,7 +137,8 @@ class SearchActivity : AppCompatActivity() {
         clearButton.visibility = View.GONE
         hideKeyboard()
         tracks = emptyList()
-        adapter = TrackAdapter(tracks)
+        adapter = TrackAdapter(tracks) { track -> searchHistory.addTrack(track)
+        }
         recyclerView.adapter = adapter
         findViewById<LinearLayout>(R.id.emptyPlaceholder).visibility = View.GONE
         findViewById<LinearLayout>(R.id.errorPlaceholder).visibility = View.GONE
@@ -164,7 +185,9 @@ class SearchActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.emptyPlaceholder).visibility = View.GONE
         findViewById<LinearLayout>(R.id.errorPlaceholder).visibility = View.GONE
 
-        adapter = TrackAdapter(tracks)
+        adapter = TrackAdapter(tracks) { track -> searchHistory.addTrack(track)
+        }
+
         recyclerView.adapter = adapter
     }
 
@@ -190,6 +213,25 @@ class SearchActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+    }
+    private fun updateHistoryVisibility() {
+        val history = searchHistory.getHistory()
+        val historyContainer = findViewById<LinearLayout>(R.id.historyContainer)
+        val historyRecyclerView = findViewById<RecyclerView>(R.id.historyRecyclerView)
+        val clearHistoryButton = findViewById<TextView>(R.id.clearHistoryButton)
+
+        if (searchEditText.text.isEmpty() && searchEditText.hasFocus() && history.isNotEmpty()) {
+            historyContainer.visibility = View.VISIBLE
+            historyRecyclerView.layoutManager = LinearLayoutManager(this)
+            historyRecyclerView.adapter = TrackAdapter(history) { track ->
+                searchHistory.addTrack(track)
+                updateHistoryVisibility()
+            }
+            clearHistoryButton.visibility = View.VISIBLE
+        } else {
+            historyContainer.visibility = View.GONE
+            clearHistoryButton.visibility = View.GONE
         }
     }
 }

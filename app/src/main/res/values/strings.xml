@@ -19,4 +19,6 @@ https://practicum.yandex.ru/profile/android-developer-plus/</string>
     <string name="error_internet_text">Проблемы со связью.\n \nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="error_search_text">Ничего не нашлось</string>
     <string name="refresh_button_text">Обновить</string>
+    <string name="were_looking">Вы искали</string>
+    <string name="clear_history">Очистить историю</string>
 </resources>

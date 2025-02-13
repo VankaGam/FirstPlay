@@ -93,6 +93,27 @@
         </LinearLayout>
     </FrameLayout>
 
+    <LinearLayout
+        android:id="@+id/historyContainer"
+        style="@style/historyContainer"
+        android:visibility="visible">
+
+        <TextView
+            style="@style/historyTitle"
+            android:id="@+id/historyTitle"
+            android:text="@string/were_looking"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/historyRecyclerView"
+            style="@style/historyRecyclerView" />
+
+        <TextView
+            android:id="@+id/clearHistoryButton"
+            style="@style/clearHistoryButton"
+            android:text="@string/clear_history"
+            android:visibility="visible"/>
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

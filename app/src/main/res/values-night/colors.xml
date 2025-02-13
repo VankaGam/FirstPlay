@@ -19,4 +19,5 @@
     <color name="color_background_start_activity">#1A1B22</color>
     <color name="color_error_image">#FFFFFF</color>
     <color name="black_text_search">#000000</color>
+    <color name="color_special_black">#FFFFFF</color>
 </resources>

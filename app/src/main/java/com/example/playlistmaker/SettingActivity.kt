@@ -10,14 +10,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.net.URLEncoder
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton
-    private lateinit var themeSwitch: SwitchCompat
+    private lateinit var themeSwitch: SwitchMaterial
     private lateinit var supportButton: LinearLayout
     private lateinit var termsButton: LinearLayout
 
@@ -36,10 +35,10 @@ class SettingActivity : AppCompatActivity() {
         val isDarkThemeEnabled = preferences.getBoolean("isDarkTheme", false)
         themeSwitch.isChecked = isDarkThemeEnabled
         updateTheme(isDarkThemeEnabled)
+        themeSwitch.isChecked = (applicationContext as App).isDarkThemeEnabled
 
         themeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            updateTheme(isChecked)
-            preferences.edit().putBoolean("isDarkTheme", isChecked).apply()
+            (applicationContext as App).switchTheme(isChecked)
         }
 
         backButton.setOnClickListener {

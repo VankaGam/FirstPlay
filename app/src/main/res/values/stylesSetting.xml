@@ -30,7 +30,7 @@
     <style name="IconStyleButton">
         <item name="android:layout_width">@dimen/margin_bottom_setting</item>
         <item name="android:layout_height">@dimen/margin_bottom_setting</item>
-        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:backgroundTint">@color/color_background</item>
         <item name="android:layout_marginEnd">@dimen/margin_setting_end</item>
     </style>
 </resources>

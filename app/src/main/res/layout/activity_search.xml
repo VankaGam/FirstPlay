@@ -96,7 +96,7 @@
     <LinearLayout
         android:id="@+id/historyContainer"
         style="@style/historyContainer"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             style="@style/historyTitle"

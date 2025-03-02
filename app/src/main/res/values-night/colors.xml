@@ -20,4 +20,5 @@
     <color name="color_error_image">#FFFFFF</color>
     <color name="black_text_search">#000000</color>
     <color name="color_special_black">#FFFFFF</color>
+    <color name="fill_color_gray">#40AEAFB4</color>
 </resources>

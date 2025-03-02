@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import model.Track
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
-class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>(), Filterable {
+class TrackAdapter(
+    private val tracks: List<Track>, private val onItemClick: (Track) -> Unit) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>(), Filterable {
 
     class TrackViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val trackNameTextView: TextView = view.findViewById(R.id.nameTrack)
@@ -20,10 +21,14 @@ class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<Track
         private val trackTimeTextView: TextView = view.findViewById(R.id.timeTrack)
         private val trackImageView: ImageView = view.findViewById(R.id.imageView)
 
-        fun bind(track: Track) {
+        fun bind(track: Track, onItemClick: (Track) -> Unit) {
             trackNameTextView.text = track.trackName
             artistNameTextView.text = track.artistName
             trackTimeTextView.text = track.getFormattedTrackTime()
+            itemView.setOnClickListener {
+                onItemClick(track)
+            }
+
 
             Glide.with(itemView)
                 .load(track.artworkUrl100)
@@ -31,6 +36,7 @@ class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<Track
                 .error(R.drawable.placeholder)
                 .transform(RoundedCorners(4))
                 .into(trackImageView)
+
         }
     }
 
@@ -40,7 +46,7 @@ class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<Track
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
+        holder.bind(tracks[position], onItemClick)
     }
 
     override fun getItemCount(): Int {

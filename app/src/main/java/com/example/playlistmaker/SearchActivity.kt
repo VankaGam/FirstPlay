@@ -1,9 +1,11 @@
 package com.example.playlistmaker
 
 import SearchHistory
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -36,7 +38,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TrackAdapter
     private var tracks: List<Track> = emptyList()
-    private val trackRepository = TrackRepository()
     private var lastSearchTerm: String? = null
     private lateinit var searchHistory: SearchHistory
 
@@ -53,7 +54,12 @@ class SearchActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = TrackAdapter(tracks) { track -> searchHistory.addTrack(track) }
+        adapter = TrackAdapter(tracks) { track ->
+            searchHistory.addTrack(track)
+            val intent = Intent(this, PlayerActivity::class.java)
+            intent.putExtra("track", track)
+            startActivity(intent)
+        }
         recyclerView.adapter = adapter
 
         if (savedInstanceState != null) {
@@ -137,7 +143,11 @@ class SearchActivity : AppCompatActivity() {
         clearButton.visibility = View.GONE
         hideKeyboard()
         tracks = emptyList()
-        adapter = TrackAdapter(tracks) { track -> searchHistory.addTrack(track)
+        adapter = TrackAdapter(tracks) { track ->
+            searchHistory.addTrack(track)
+            val intent = Intent(this, PlayerActivity::class.java)
+            intent.putExtra("track", track)
+            startActivity(intent)
         }
         recyclerView.adapter = adapter
         findViewById<LinearLayout>(R.id.emptyPlaceholder).visibility = View.GONE
@@ -150,8 +160,18 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun performSearch(term: String) {
-        lastSearchTerm = term
         val apiService = RetrofitInstance.api
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val query = searchEditText.text.toString()
+                if (query.isNotEmpty()) {
+                    performSearch(query)
+                }
+                true
+            } else {
+                false
+            }
+        }
         apiService.search(term).enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 if (response.isSuccessful && response.body() != null) {
@@ -162,7 +182,11 @@ class SearchActivity : AppCompatActivity() {
                                 track.trackName,
                                 track.artistName,
                                 track.trackTimeMillis,
-                                track.artworkUrl100
+                                track.artworkUrl100,
+                                track.collectionName,
+                                track.releaseDate,
+                                track.primaryGenreName,
+                                track.country
                             )
                         }
                         showResults(tracks)
@@ -176,19 +200,23 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                 showErrorPlaceholder()
+                Log.e("SearchActivity", "Network error: ${t.message}")
             }
         })
     }
 
     private fun showResults(tracks: List<Track>) {
-        findViewById<RecyclerView>(R.id.recyclerView).visibility = View.VISIBLE
+        Log.d("SearchActivity", "Showing results: ${tracks.size} tracks")
+        adapter = TrackAdapter(tracks) { track ->
+            searchHistory.addTrack(track)
+            val intent = Intent(this, PlayerActivity::class.java)
+            intent.putExtra("track", track)
+            startActivity(intent)
+        }
+        recyclerView.adapter = adapter
+        recyclerView.visibility = View.VISIBLE
         findViewById<LinearLayout>(R.id.emptyPlaceholder).visibility = View.GONE
         findViewById<LinearLayout>(R.id.errorPlaceholder).visibility = View.GONE
-
-        adapter = TrackAdapter(tracks) { track -> searchHistory.addTrack(track)
-        }
-
-        recyclerView.adapter = adapter
     }
 
     private fun showEmptyPlaceholder() {
@@ -226,7 +254,9 @@ class SearchActivity : AppCompatActivity() {
             historyRecyclerView.layoutManager = LinearLayoutManager(this)
             historyRecyclerView.adapter = TrackAdapter(history) { track ->
                 searchHistory.addTrack(track)
-                updateHistoryVisibility()
+                val intent = Intent(this, PlayerActivity::class.java)
+                intent.putExtra("track", track)
+                startActivity(intent)
             }
             clearHistoryButton.visibility = View.VISIBLE
         } else {

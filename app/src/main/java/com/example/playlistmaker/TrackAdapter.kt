@@ -4,8 +4,6 @@ import com.bumptech.glide.Glide
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +11,9 @@ import model.Track
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class TrackAdapter(
-    private val tracks: List<Track>, private val onItemClick: (Track) -> Unit) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>(), Filterable {
+    private val tracks: List<Track>,
+    private val onItemClick: (Track) -> Unit
+) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
     class TrackViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val trackNameTextView: TextView = view.findViewById(R.id.nameTrack)
@@ -51,10 +51,6 @@ class TrackAdapter(
 
     override fun getItemCount(): Int {
         return tracks.size
-    }
-
-    override fun getFilter(): Filter {
-        TODO("Not yet implemented")
     }
 
 }

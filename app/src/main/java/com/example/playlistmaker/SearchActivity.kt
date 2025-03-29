@@ -131,6 +131,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun performSearchDebounced(query: String) {
         searchJob?.cancel()
+        searchJob = null
         searchJob = lifecycleScope.launch {
             if (query.isEmpty()) {
                 clearSearchResults()
@@ -182,6 +183,8 @@ class SearchActivity : AppCompatActivity() {
                     showErrorPlaceholder()
                 }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
                 showErrorPlaceholder()

@@ -44,17 +44,15 @@ class PlayerActivity : AppCompatActivity() {
         }
 
 
-        if (track != null) {
-            if (track.previewUrl.isNullOrEmpty()) {
-                Toast.makeText(this, "Аудиопревью недоступно", Toast.LENGTH_SHORT).show()
-                finish()
-                return
-            }
+        if (track == null) return
+
+        if (track.previewUrl.isNullOrEmpty()) {
+            Toast.makeText(this, "Аудио недоступно", Toast.LENGTH_SHORT).show()
+            finish()
+            return
         }
 
-        if (track != null) {
-            initializePlayer(track.previewUrl!!)
-        }
+        initializePlayer(track.previewUrl)
         setupListeners()
     }
 
@@ -148,15 +146,16 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun pausePlayback() {
-        mediaPlayer?.let { player ->
-            try {
-                player.pause()
-                isPlaying = false
-                playPauseButton.setImageResource(R.drawable.play_button)
-                updateTimeRunnable?.let { handler.removeCallbacks(it) }
-            } catch (e: IllegalStateException) {
-                Log.e("PlayerActivity", "Ошибка паузы", e)
-            }
+        try {
+            mediaPlayer?.pause()
+            isPlaying = false
+            playPauseButton.setImageResource(R.drawable.play_button)
+        } catch (e: IllegalStateException) {
+            Log.e("PlayerActivity", "Ошибка паузы", e)
+        }
+
+        if (updateTimeRunnable != null) {
+            handler.removeCallbacks(updateTimeRunnable!!)
         }
     }
 
@@ -172,7 +171,7 @@ class PlayerActivity : AppCompatActivity() {
 
                 if (resetPosition) {
                     player.seekTo(0)
-                    currentTimeText.text = "00:00"
+                    currentTimeText.text = getString(R.string.music_time)
                 } else {
 
                 }

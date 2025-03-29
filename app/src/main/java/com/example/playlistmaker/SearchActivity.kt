@@ -122,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && searchEditText.text.isEmpty()) {
-                updateHistoryVisibility()  // Показываем историю только если поле пустое
+                updateHistoryVisibility()
             } else {
                 findViewById<LinearLayout>(R.id.historyContainer).visibility = View.GONE
             }
@@ -172,7 +172,11 @@ class SearchActivity : AppCompatActivity() {
                                 previewUrl = apiTrack.previewUrl ?: ""
                             )
                         }
-                        showResults(tracks)
+                        if (tracks.isEmpty()) {
+                            showEmptyPlaceholder()
+                        } else {
+                            showResults(tracks)
+                        }
                     } ?: showErrorPlaceholder()
                 } else {
                     showErrorPlaceholder()
@@ -193,12 +197,19 @@ class SearchActivity : AppCompatActivity() {
         tracks = emptyList()
         adapter.updateTracks(emptyList())
         hidePlaceholders()
+        findViewById<LinearLayout>(R.id.emptyPlaceholder).visibility = View.GONE
     }
 
     private fun showResults(tracks: List<Track>) {
         adapter.updateTracks(tracks)
         recyclerView.visibility = View.VISIBLE
         hidePlaceholders()
+    }
+
+    private fun showEmptyPlaceholder() {
+        findViewById<LinearLayout>(R.id.emptyPlaceholder).visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        findViewById<LinearLayout>(R.id.errorPlaceholder).visibility = View.GONE
     }
 
     private fun showErrorPlaceholder() {

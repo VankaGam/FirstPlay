@@ -23,4 +23,5 @@
     <color name="black_text_search">#000000</color>
     <color name="color_special_black">#1A1B22</color>
     <color name="fill_color_gray">#FFAEAFB4</color>
+    <color name="blue">#3772E7</color>
 </resources>

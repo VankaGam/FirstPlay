@@ -24,18 +24,14 @@ import androidx.recyclerview.widget.RecyclerView
 import api.ApiResponse
 import api.RetrofitInstance
 import model.Track
-import model.TrackRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
 import retrofit2.awaitResponse
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var backButton: ImageButton

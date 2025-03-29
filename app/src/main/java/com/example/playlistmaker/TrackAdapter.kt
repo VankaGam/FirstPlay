@@ -11,9 +11,14 @@ import model.Track
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class TrackAdapter(
-    private val tracks: List<Track>,
+    private var tracks: List<Track>,
     private val onItemClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+
+    companion object {
+        private var lastClickTime = 0L
+        private const val debounceInterval = 1000L
+    }
 
     class TrackViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val trackNameTextView: TextView = view.findViewById(R.id.nameTrack)
@@ -29,6 +34,13 @@ class TrackAdapter(
                 onItemClick(track)
             }
 
+            itemView.setOnClickListener {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastClickTime >= debounceInterval) {
+                    lastClickTime = currentTime
+                    onItemClick(track)
+                }
+            }
 
             Glide.with(itemView)
                 .load(track.artworkUrl100)
@@ -38,6 +50,11 @@ class TrackAdapter(
                 .into(trackImageView)
 
         }
+    }
+
+    fun updateTracks(newTracks: List<Track>) {
+        tracks = newTracks
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {

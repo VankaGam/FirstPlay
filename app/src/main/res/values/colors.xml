@@ -22,4 +22,5 @@
     <color name="color_error_image">#1A1B22</color>
     <color name="black_text_search">#000000</color>
     <color name="color_special_black">#1A1B22</color>
+    <color name="fill_color_gray">#FFAEAFB4</color>
 </resources>

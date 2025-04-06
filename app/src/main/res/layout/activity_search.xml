@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_background"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".SearchActivity">
 
     <FrameLayout
@@ -112,6 +113,7 @@
             style="@style/clearHistoryButton"
             android:text="@string/clear_history"
             android:visibility="visible"/>
+
     </LinearLayout>
 
     <ScrollView
@@ -158,10 +160,25 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:visibility="gone"
+        tools:listitem="@layout/item_track" />
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        tools:listitem="@layout/item_track"/>
+        android:layout_weight="1">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="140dp"
+            android:visibility="gone"
+            android:indeterminateTint="@color/blue" />
+    </FrameLayout>
 
 </LinearLayout>

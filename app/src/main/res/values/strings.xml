@@ -21,4 +21,5 @@ https://practicum.yandex.ru/profile/android-developer-plus/</string>
     <string name="refresh_button_text">Обновить</string>
     <string name="were_looking">Вы искали</string>
     <string name="clear_history">Очистить историю</string>
+    <string name="music_time">00:00</string>
 </resources>

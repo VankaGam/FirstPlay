@@ -1,15 +1,18 @@
+package com.example.playlistmaker.data.local
+
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.playlistmaker.domain.model.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import model.Track
 
-class SearchHistory(context: Context) {
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("search_history", Context.MODE_PRIVATE)
+class SearchHistoryStorage(context: Context) {
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("search_history", Context.MODE_PRIVATE)
     private val gson = Gson()
     private val key = "history"
 
-    fun addTrack(track: Track) {
+    fun saveTrack(track: Track) {
         val history = getHistory().toMutableList()
         history.removeAll { it.trackName == track.trackName && it.artistName == track.artistName }
         history.add(0, track)

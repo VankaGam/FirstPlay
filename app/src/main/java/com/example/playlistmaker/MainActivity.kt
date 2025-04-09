@@ -6,36 +6,26 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.presentation.ui.medialibrary.MediaLibraryActivity
+import com.example.playlistmaker.presentation.ui.search.SearchActivity
+import com.example.playlistmaker.presentation.ui.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val preferences: SharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isDarkThemeEnabled = preferences.getBoolean("isDarkTheme", false)
-        updateTheme(isDarkThemeEnabled)
         setContentView(R.layout.activity_main)
-        val displayButton1 = findViewById<LinearLayout>(R.id.setting)
-        val displayButton2 = findViewById<LinearLayout>(R.id.poisk)
-        val displayButton3 = findViewById<LinearLayout>(R.id.media)
-        displayButton1.setOnClickListener {
-            val displayIntent1 = Intent(this, SettingActivity::class.java)
-            startActivity(displayIntent1)
+
+        findViewById<LinearLayout>(R.id.setting).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
-        displayButton2.setOnClickListener {
-            val displayIntent2 = Intent(this, SearchActivity::class.java)
-            startActivity(displayIntent2)
+
+        findViewById<LinearLayout>(R.id.poisk).setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
         }
-        displayButton3.setOnClickListener {
-            val displayIntent3 = Intent(this, MediaLibraryActivity::class.java)
-            startActivity(displayIntent3)
-        }
-    }
-    private fun updateTheme(isDarkTheme: Boolean) {
-        if (isDarkTheme) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        findViewById<LinearLayout>(R.id.media).setOnClickListener {
+            startActivity(Intent(this, MediaLibraryActivity::class.java))
         }
     }
 }

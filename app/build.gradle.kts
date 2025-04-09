@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("plugin.serialization") version "1.9.0"
     kotlin("kapt")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -54,4 +55,6 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("jp.wasabeef:glide-transformations:4.3.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.activity:activity-ktx:1.8.2")
 }

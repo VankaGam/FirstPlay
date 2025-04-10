@@ -11,7 +11,6 @@ import com.example.playlistmaker.domain.repository.SearchHistoryRepository
 import com.example.playlistmaker.domain.usecase.SearchTracksUseCase
 import com.example.playlistmaker.domain.usecase.TrackRepository
 import com.example.playlistmaker.presentation.ui.viewmodel.SearchViewModel
-import com.example.playlistmaker.presentation.ui.viewmodel.SearchViewModelFactory
 import com.example.playlistmaker.presentation.ui.viewmodel.SettingsViewModelFactory
 
 object Creator {

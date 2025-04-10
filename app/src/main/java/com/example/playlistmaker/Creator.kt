@@ -8,7 +8,6 @@ import com.example.playlistmaker.domain.usecase.ClearSearchHistoryUseCase
 import com.example.playlistmaker.domain.usecase.GetSearchHistoryUseCase
 import com.example.playlistmaker.domain.usecase.SaveTrackToHistoryUseCase
 import com.example.playlistmaker.domain.repository.SearchHistoryRepository
-import com.example.playlistmaker.domain.usecase.AddToHistoryUseCase
 import com.example.playlistmaker.domain.usecase.SearchTracksUseCase
 import com.example.playlistmaker.domain.usecase.TrackRepository
 import com.example.playlistmaker.presentation.ui.viewmodel.SearchViewModelFactory
@@ -37,8 +36,8 @@ object Creator {
     }
 
     // UseCase: История
-    fun provideSaveTrackUseCase(context: Context): AddToHistoryUseCase {
-        return AddToHistoryUseCase(provideSearchHistoryRepository(context))
+    fun provideSaveTrackUseCase(context: Context): SaveTrackToHistoryUseCase {
+        return SaveTrackToHistoryUseCase(provideSearchHistoryRepository(context))
     }
 
     fun provideGetHistoryUseCase(context: Context): GetSearchHistoryUseCase {
@@ -56,10 +55,5 @@ object Creator {
             provideGetHistoryUseCase(context),
             provideClearHistoryUseCase(context)
         )
-    }
-
-    fun provideSettingsViewModelFactory(context: Context): SettingsViewModelFactory {
-        val prefs = provideSharedPreferences(context)
-        return SettingsViewModelFactory(prefs)
     }
 }

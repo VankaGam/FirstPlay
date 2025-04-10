@@ -97,7 +97,9 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun stopTimer() {
-        handler.removeCallbacks(timerRunnable)
+        if (::timerRunnable.isInitialized) {
+            handler.removeCallbacks(timerRunnable)
+        }
     }
 
     private fun formatTime(ms: Int): String {

@@ -8,27 +8,27 @@ import com.example.playlistmaker.domain.usecase.*
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val saveTrackUseCase: AddToHistoryUseCase,
-    private val getHistoryUseCase: GetSearchHistoryUseCase,
-    private val clearHistoryUseCase: ClearSearchHistoryUseCase
+    private val searchTracksUseCase: SearchTracksUseCase,
+    private val saveTrackToHistoryUseCase: SaveTrackToHistoryUseCase,
+    private val getSearchHistoryUseCase: GetSearchHistoryUseCase,
+    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase
 ) : ViewModel() {
 
     val isLoading = MutableLiveData<Boolean>()
-    val errorMessage = MutableLiveData<String>()
-    val historyLiveData = MutableLiveData<List<Track>>()  // <-- история
+    val errorMessage = MutableLiveData<String?>()
+    val tracks = MutableLiveData<List<Track>>()
+    val history = MutableLiveData<List<Track>>()
+    val isEmptyResult = MutableLiveData<Boolean>()
 
+    // Поиск треков по запросу
     fun search(query: String) {
         viewModelScope.launch {
             isLoading.value = true
             errorMessage.value = null
-            isEmptyResult.value = false
             try {
-                val results = searchTracksUseCase(query)
-                if (results.isEmpty()) {
-                    isEmptyResult.value = true
-                } else {
-                    tracks.value = results
-                }
+                val result = searchTracksUseCase.execute(query)
+                isEmptyResult.value = result.isEmpty()
+                tracks.value = result
             } catch (e: Exception) {
                 errorMessage.value = "Ошибка: ${e.message}"
             } finally {
@@ -37,22 +37,25 @@ class SearchViewModel(
         }
     }
 
+    // Загрузка истории
     fun loadHistory() {
         viewModelScope.launch {
-            history.value = getSearchHistoryUseCase()
+            history.value = getSearchHistoryUseCase.execute()
         }
     }
 
+    // Сохранение трека в историю
     fun saveTrackToHistory(track: Track) {
         viewModelScope.launch {
-            saveTrackToHistoryUseCase(track)
+            saveTrackToHistoryUseCase.execute(track)
             loadHistory()
         }
     }
 
+    // Очистка истории
     fun clearHistory() {
         viewModelScope.launch {
-            clearSearchHistoryUseCase()
+            clearSearchHistoryUseCase.execute()
             history.value = emptyList()
         }
     }

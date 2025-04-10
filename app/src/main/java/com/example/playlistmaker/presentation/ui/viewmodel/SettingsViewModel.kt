@@ -1,33 +1,27 @@
 package com.example.playlistmaker.presentation.ui.viewmodel
 
+import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.domain.usecase.GetThemeModeUseCase
 import com.example.playlistmaker.domain.usecase.SearchTracksUseCase
+import com.example.playlistmaker.domain.usecase.SetThemeModeUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class SearchViewModel(private val searchTracksUseCase: SearchTracksUseCase) : ViewModel() {
-    val tracksLiveData = MutableLiveData<List<Track>>()
-    val isLoading = MutableLiveData<Boolean>()
-    val errorMessage = MutableLiveData<String>()
+class SettingsViewModel(
+    private val getThemeModeUseCase: GetThemeModeUseCase,
+    private val setThemeModeUseCase: SetThemeModeUseCase
+) : ViewModel() {
 
+    fun isDarkTheme(): Boolean {
+        return getThemeModeUseCase()
+    }
 
-    fun searchTracks(query: String) {
-        isLoading.value = true
-        viewModelScope.launch {
-            try {
-                val tracks = searchTracksUseCase.execute(query)
-                if (tracks.isEmpty()) {
-                    errorMessage.value = "No results found"
-                }
-                tracksLiveData.value = tracks
-            } catch (e: Exception) {
-                errorMessage.value = "An error occurred"
-            } finally {
-                isLoading.value = false
-            }
-        }
+    fun switchTheme(enabled: Boolean) {
+        setThemeModeUseCase(enabled)
     }
 }

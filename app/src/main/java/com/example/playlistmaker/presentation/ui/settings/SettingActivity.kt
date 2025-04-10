@@ -33,7 +33,8 @@ class SettingsActivity : AppCompatActivity() {
         val supportButton = findViewById<LinearLayout>(R.id.support)
         val termsButton = findViewById<LinearLayout>(R.id.agreement)
 
-        themeSwitcher.isChecked = viewModel.isDarkTheme()
+        themeSwitcher.isChecked =
+            AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
         themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             viewModel.switchTheme(isChecked)

@@ -6,7 +6,7 @@ import com.example.playlistmaker.domain.repository.SearchHistoryRepository
 class SaveTrackToHistoryUseCase(
     private val repository: SearchHistoryRepository
 ) {
-    fun execute(track: Track) {
-        repository.saveTrack(track)
+    suspend operator fun invoke(track: Track) {
+        repository.addTrack(track)
     }
 }

@@ -38,6 +38,11 @@ class PlayerActivity : AppCompatActivity() {
         track?.let {
             updateUI(it)
             playerViewModel.preparePlayer(it)
+            playerViewModel.setOnCompleteListener {
+                stopTimer()
+                currentTimeTextView.text = "00:00"
+                playButton.setImageResource(R.drawable.play_button)
+            }
         }
 
         playButton.setOnClickListener {
@@ -114,4 +119,5 @@ class PlayerActivity : AppCompatActivity() {
         stopTimer()
         playerViewModel.release()
     }
+
 }

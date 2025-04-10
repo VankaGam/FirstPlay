@@ -18,4 +18,8 @@ class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
     override fun clearHistory() {
         storage.clearHistory()
     }
+
+    override suspend fun addTrack(track: Track) {
+        saveTrack(track)
+    }
 }

@@ -10,6 +10,7 @@ import com.example.playlistmaker.domain.usecase.SaveTrackToHistoryUseCase
 import com.example.playlistmaker.domain.repository.SearchHistoryRepository
 import com.example.playlistmaker.domain.usecase.SearchTracksUseCase
 import com.example.playlistmaker.domain.usecase.TrackRepository
+import com.example.playlistmaker.presentation.ui.viewmodel.SearchViewModel
 import com.example.playlistmaker.presentation.ui.viewmodel.SearchViewModelFactory
 import com.example.playlistmaker.presentation.ui.viewmodel.SettingsViewModelFactory
 
@@ -20,40 +21,15 @@ object Creator {
         return context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     }
 
-    // Репозиторий треков
-    private fun provideTrackRepository(): TrackRepository {
-        return TrackRepositoryImpl()
-    }
+    fun provideSearchViewModel(context: Context): SearchViewModel {
+        val trackRepo = TrackRepositoryImpl()
+        val historyRepo = SearchHistoryRepositoryImpl(context)
 
-    // Репозиторий истории
-    private fun provideSearchHistoryRepository(context: Context): SearchHistoryRepository {
-        return SearchHistoryRepositoryImpl(context)
-    }
-
-    // UseCase: Поиск треков
-    fun provideSearchTracksUseCase(): SearchTracksUseCase {
-        return SearchTracksUseCase(provideTrackRepository())
-    }
-
-    // UseCase: История
-    fun provideSaveTrackUseCase(context: Context): SaveTrackToHistoryUseCase {
-        return SaveTrackToHistoryUseCase(provideSearchHistoryRepository(context))
-    }
-
-    fun provideGetHistoryUseCase(context: Context): GetSearchHistoryUseCase {
-        return GetSearchHistoryUseCase(provideSearchHistoryRepository(context))
-    }
-
-    fun provideClearHistoryUseCase(context: Context): ClearSearchHistoryUseCase {
-        return ClearSearchHistoryUseCase(provideSearchHistoryRepository(context))
-    }
-
-    fun provideSearchViewModelFactory(context: Context): SearchViewModelFactory {
-        return SearchViewModelFactory(
-            provideSearchTracksUseCase(),
-            provideSaveTrackUseCase(context),
-            provideGetHistoryUseCase(context),
-            provideClearHistoryUseCase(context)
+        return SearchViewModel(
+            SearchTracksUseCase(trackRepo),
+            SaveTrackToHistoryUseCase(historyRepo),
+            GetSearchHistoryUseCase(historyRepo),
+            ClearSearchHistoryUseCase(historyRepo)
         )
     }
 }

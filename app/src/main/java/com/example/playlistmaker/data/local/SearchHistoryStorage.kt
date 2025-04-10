@@ -14,11 +14,15 @@ class SearchHistoryStorage(context: Context) {
 
     fun saveTrack(track: Track) {
         val history = getHistory().toMutableList()
-        history.removeAll { it.trackName == track.trackName && it.artistName == track.artistName }
+
+        history.removeAll { it.trackId == track.trackId }
+
         history.add(0, track)
+
         if (history.size > 10) {
-            history.removeAt(history.size - 1)
+            history.removeLast()
         }
+
         saveHistory(history)
     }
 

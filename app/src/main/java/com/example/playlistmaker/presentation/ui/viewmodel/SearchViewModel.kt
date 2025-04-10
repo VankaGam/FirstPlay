@@ -5,58 +5,66 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.usecase.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchViewModel(
     private val searchTracksUseCase: SearchTracksUseCase,
     private val saveTrackToHistoryUseCase: SaveTrackToHistoryUseCase,
     private val getSearchHistoryUseCase: GetSearchHistoryUseCase,
     private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase
-) : ViewModel() {
+) : ViewModel(){
 
-    val isLoading = MutableLiveData<Boolean>()
-    val errorMessage = MutableLiveData<String?>()
-    val tracks = MutableLiveData<List<Track>>()
-    val history = MutableLiveData<List<Track>>()
-    val isEmptyResult = MutableLiveData<Boolean>()
+    var tracks: List<Track> = emptyList()
+    var history: List<Track> = emptyList()
+    var isLoading = false
+    var isEmptyResult = false
+    var isError = false
 
-    // Поиск треков по запросу
-    fun search(query: String) {
-        viewModelScope.launch {
-            isLoading.value = true
-            errorMessage.value = null
-            try {
-                val result = searchTracksUseCase.execute(query)
-                isEmptyResult.value = result.isEmpty()
-                tracks.value = result
-            } catch (e: Exception) {
-                errorMessage.value = "Ошибка: ${e.message}"
-            } finally {
-                isLoading.value = false
+    suspend fun search(query: String) {
+        isLoading = true
+        isError = false
+        isEmptyResult = false
+        tracks = emptyList()
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                searchTracksUseCase.invoke(query)
             }
+
+            isLoading = false
+            if (result.isEmpty()) {
+                isEmptyResult = true
+            } else {
+                tracks = result
+            }
+        } catch (e: Exception) {
+            isLoading = false
+            isError = true
         }
     }
 
-    // Загрузка истории
     fun loadHistory() {
-        viewModelScope.launch {
-            history.value = getSearchHistoryUseCase.execute()
-        }
+        history = getSearchHistoryUseCase.execute()
     }
 
-    // Сохранение трека в историю
-    fun saveTrackToHistory(track: Track) {
-        viewModelScope.launch {
-            saveTrackToHistoryUseCase.execute(track)
-            loadHistory()
-        }
-    }
-
-    // Очистка истории
     fun clearHistory() {
+        clearSearchHistoryUseCase.execute()
+        history = emptyList()
+    }
+
+    fun saveTrackToHistory(track: Track, onSaved: () -> Unit = {}) {
         viewModelScope.launch {
-            clearSearchHistoryUseCase.execute()
-            history.value = emptyList()
+            saveTrackToHistoryUseCase(track)
+            loadHistory()
+            onSaved()
+        }
+    }
+
+    fun saveToHistory(track: Track) {
+        viewModelScope.launch {
+            saveTrackToHistoryUseCase.invoke(track)
         }
     }
 }

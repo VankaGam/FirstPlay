@@ -15,6 +15,7 @@ class PlayerViewModel : ViewModel() {
 
     private var mediaPlayer: MediaPlayer? = null
     private var playerState = STATE_DEFAULT
+    private var onCompleteCallback: (() -> Unit)? = null
 
     fun preparePlayer(track: Track) {
         mediaPlayer = MediaPlayer()
@@ -25,6 +26,7 @@ class PlayerViewModel : ViewModel() {
         }
         mediaPlayer?.setOnCompletionListener {
             playerState = STATE_PREPARED
+            onCompleteCallback?.invoke()
         }
     }
 
@@ -57,5 +59,9 @@ class PlayerViewModel : ViewModel() {
 
     fun getCurrentPosition(): Int {
         return mediaPlayer?.currentPosition ?: 0
+    }
+
+    fun setOnCompleteListener(callback: () -> Unit) {
+        onCompleteCallback = callback
     }
 }

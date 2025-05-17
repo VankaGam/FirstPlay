@@ -1,25 +1,22 @@
-package com.example.playlistmaker.player.data
+package com.example.playlistmaker.player.data.repository
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.repository.PlayerRepository
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class PlayerInteractorImpl : PlayerInteractor {
+class PlayerRepositoryImpl : PlayerRepository {
     private var player: MediaPlayer? = null
     private val _isPlaying = MutableStateFlow(false)
-    override val isPlaying: Flow<Boolean> = _isPlaying.asStateFlow()
-
+    override val isPlaying = _isPlaying.asStateFlow()
     private val _position = MutableStateFlow(0)
-    override val position: Flow<Int> = _position.asStateFlow()
-
+    override val position = _position.asStateFlow()
     private var scope = CoroutineScope(Dispatchers.Main)
 
     override fun prepare(track: Track) {
@@ -35,11 +32,12 @@ class PlayerInteractorImpl : PlayerInteractor {
             }
         }
         _isPlaying.value = true
-        scope = CoroutineScope(Dispatchers.Main)
-        scope.launch {
-            while (player != null) {
-                _position.value = player?.currentPosition ?: 0
-                delay(500)
+        scope = CoroutineScope(Dispatchers.Main).also { s ->
+            s.launch {
+                while (player != null) {
+                    _position.value = player?.currentPosition ?: 0
+                    delay(500)
+                }
             }
         }
     }

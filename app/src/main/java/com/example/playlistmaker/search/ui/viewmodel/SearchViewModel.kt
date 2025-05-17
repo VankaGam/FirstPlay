@@ -1,72 +1,80 @@
 package com.example.playlistmaker.search.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.domain.usecase.ClearSearchHistoryUseCase
-import com.example.playlistmaker.search.domain.usecase.GetSearchHistoryUseCase
-import com.example.playlistmaker.search.domain.usecase.SaveTrackToHistoryUseCase
-import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCase
+import com.example.playlistmaker.search.domain.usecase.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SearchViewModel(
-    private val searchTracksUseCase: SearchTracksUseCase,
-    private val saveTrackToHistoryUseCase: SaveTrackToHistoryUseCase,
-    private val getSearchHistoryUseCase: GetSearchHistoryUseCase,
-    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase
-) : ViewModel(){
+    private val searchTracks: SearchTracksUseCase,
+    private val saveToHistory: SaveTrackToHistoryUseCase,
+    private val loadHistoryUseCase: GetSearchHistoryUseCase,
+    private val clearHistoryUseCase: ClearSearchHistoryUseCase
+) : ViewModel() {
 
-    var tracks: List<Track> = emptyList()
-    var history: List<Track> = emptyList()
-    var isLoading = false
-    var isEmptyResult = false
-    var isError = false
+    private val _state = MutableLiveData(SearchState())
+    val state: LiveData<SearchState> = _state
 
-    suspend fun search(query: String) {
-        isLoading = true
-        isError = false
-        isEmptyResult = false
-        tracks = emptyList()
+    fun search(query: String) {
+        viewModelScope.launch {
+            _state.value = _state.value!!.copy(
+                query = query,
+                isLoading = true,
+                isError = false,
+                isEmpty = false,
+                showHistory = false,
+                tracks = emptyList()
+            )
 
-        try {
-            val result = withContext(Dispatchers.IO) {
-                searchTracksUseCase.invoke(query)
+            try {
+                val result = withContext(Dispatchers.IO) { searchTracks(query) }
+                _state.value = _state.value!!.copy(
+                    isLoading = false,
+                    tracks = result,
+                    isEmpty = result.isEmpty()
+                )
+            } catch (e: Exception) {
+                _state.value = _state.value!!.copy(
+                    isLoading = false,
+                    isError = true
+                )
             }
-
-            isLoading = false
-            if (result.isEmpty()) {
-                isEmptyResult = true
-            } else {
-                tracks = result
-            }
-        } catch (e: Exception) {
-            isLoading = false
-            isError = true
         }
     }
 
     fun loadHistory() {
-        history = getSearchHistoryUseCase.execute()
+        viewModelScope.launch(Dispatchers.IO) {
+            val hist = loadHistoryUseCase.execute()
+            _state.postValue(_state.value!!.copy(
+                query = "",
+                history = hist,
+                showHistory = hist.isNotEmpty()
+            ))
+        }
     }
 
     fun clearHistory() {
-        clearSearchHistoryUseCase.execute()
-        history = emptyList()
-    }
-
-    fun saveTrackToHistory(track: Track, onSaved: () -> Unit = {}) {
-        viewModelScope.launch {
-            saveTrackToHistoryUseCase(track)
-            loadHistory()
-            onSaved()
+        viewModelScope.launch(Dispatchers.IO) {
+            clearHistoryUseCase.execute()
+            _state.postValue(_state.value!!.copy(
+                query = "",
+                history = emptyList(),
+                showHistory = false
+            ))
         }
     }
 
-    fun saveToHistory(track: Track) {
-        viewModelScope.launch {
-            saveTrackToHistoryUseCase.invoke(track)
+    fun saveTrack(track: Track) {
+        viewModelScope.launch(Dispatchers.IO) {
+            saveToHistory(track)
+            val hist = loadHistoryUseCase.execute()
+            _state.postValue(_state.value!!.copy(
+                history = hist,
+                showHistory = hist.isNotEmpty()
+            ))
         }
     }
 }
+

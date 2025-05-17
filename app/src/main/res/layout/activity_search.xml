@@ -78,6 +78,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="@string/search"
+                android:textCursorDrawable="@drawable/text_cursor"
                 android:inputType="text"
                 android:imeOptions="actionDone"
                 android:singleLine="true"/>

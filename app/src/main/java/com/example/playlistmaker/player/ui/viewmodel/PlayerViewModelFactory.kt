@@ -2,10 +2,10 @@ package com.example.playlistmaker.player.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.repository.PlayerRepository
 
 class PlayerViewModelFactory(
-    private val interactor: PlayerInteractor
+    private val interactor: PlayerRepository
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

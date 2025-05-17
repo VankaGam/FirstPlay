@@ -1,9 +1,9 @@
-package com.example.playlistmaker.player.domain
+package com.example.playlistmaker.player.domain.repository
 
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
 
-interface PlayerInteractor {
+interface PlayerRepository {
     fun prepare(track: Track)
     fun playPause()
     fun release()

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <queries>
         <package android:name="com.android.email" />
@@ -19,6 +20,7 @@
             <data android:scheme="https" />
         </intent>
     </queries>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -40,21 +42,10 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".SearchActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".MediaLibraryActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".SettingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PlayerActivity"
-            android:exported="false" />
+        <activity android:name=".presentation.ui.search.SearchActivity" android:exported="false" />
+        <activity android:name=".presentation.ui.player.PlayerActivity" android:exported="false" />
+        <activity android:name=".presentation.ui.settings.SettingsActivity" android:exported="false" />
+        <activity android:name=".presentation.ui.medialibrary.MediaLibraryActivity" android:exported="false" />
 
     </application>
-
 </manifest>

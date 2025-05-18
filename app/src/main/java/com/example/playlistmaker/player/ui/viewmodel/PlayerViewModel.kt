@@ -2,6 +2,7 @@ package com.example.playlistmaker.player.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.example.playlistmaker.player.domain.repository.PlayerRepository
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class PlayerViewModel(
-    private val interactor: PlayerRepository
+    private val interactor: PlayerInteractor
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PlayerState())
@@ -28,10 +29,9 @@ class PlayerViewModel(
 
     fun prepare(track: Track) = interactor.prepare(track)
     fun playPause() = interactor.playPause()
-
     fun release() = interactor.release()
 
-    override fun onCleared()  = interactor.release()
+    override fun onCleared() = interactor.release()
 
     private fun updateState(
         isPlaying: Boolean = _state.value.isPlaying,

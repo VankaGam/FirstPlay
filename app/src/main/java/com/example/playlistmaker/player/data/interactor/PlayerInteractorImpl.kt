@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.data.interactor
 
 import android.media.MediaPlayer
+import com.example.playlistmaker.player.data.media.MediaPlayerFactory
 import com.example.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class PlayerInteractorImpl : PlayerInteractor {
+class PlayerInteractorImpl(private val mediaPlayerFactory: MediaPlayerFactory) : PlayerInteractor {
     private var player: MediaPlayer? = null
     private val _isPlaying = MutableStateFlow(false)
     override val isPlaying = _isPlaying.asStateFlow()
@@ -23,7 +24,7 @@ class PlayerInteractorImpl : PlayerInteractor {
 
     override fun prepare(track: Track) {
         release()
-        player = MediaPlayer().apply {
+        player = mediaPlayerFactory.create().apply {
             setDataSource(track.previewUrl)
             prepare()
             start()

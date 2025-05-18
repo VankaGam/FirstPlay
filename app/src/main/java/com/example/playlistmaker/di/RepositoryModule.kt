@@ -12,21 +12,21 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<TrackRepository> {
+    factory<TrackRepository> {
         TrackRepositoryImpl(get())
     }
 
-    single<SearchHistoryRepository> {
+    factory<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(get())
     }
 
-    single<SettingsRepository> {
+    factory<SettingsRepository> {
         SettingsRepositoryImpl(
-            get(named("app_prefs"))
+            get(named(Qualifiers.APP_PREFS))
         )
     }
 
-    single<PlayerRepository> {
-        PlayerRepositoryImpl()
+    factory<PlayerRepository> {
+        PlayerRepositoryImpl(get())
     }
 }

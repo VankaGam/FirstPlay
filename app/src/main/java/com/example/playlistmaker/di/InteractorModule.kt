@@ -12,11 +12,11 @@ import org.koin.dsl.module
 
 val interactorModule = module {
 
-    single { SearchTracksUseCase(get()) }
-    single { SaveTrackToHistoryUseCase(get()) }
-    single { GetSearchHistoryUseCase(get()) }
-    single { ClearSearchHistoryUseCase(get()) }
-    single { GetThemeModeUseCase(get()) }
-    single { SetThemeModeUseCase(get()) }
-    single<PlayerInteractor> { PlayerInteractorImpl() }
+    factory { SearchTracksUseCase(get()) }
+    factory { SaveTrackToHistoryUseCase(get()) }
+    factory { GetSearchHistoryUseCase(get()) }
+    factory { ClearSearchHistoryUseCase(get()) }
+    factory { GetThemeModeUseCase(get()) }
+    factory { SetThemeModeUseCase(get()) }
+    factory<PlayerInteractor> { PlayerInteractorImpl(get()) }
 }

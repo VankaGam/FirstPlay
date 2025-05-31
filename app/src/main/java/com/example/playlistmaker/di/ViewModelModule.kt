@@ -1,7 +1,7 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.Fragment.FavoritesViewModel
-import com.example.playlistmaker.Fragment.PlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.FavoritesViewModel
+import com.example.playlistmaker.media.ui.viewmodel.PlaylistViewModel
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel

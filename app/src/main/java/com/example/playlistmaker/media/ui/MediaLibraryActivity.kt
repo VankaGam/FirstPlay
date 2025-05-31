@@ -1,8 +1,8 @@
-package com.example.playlistmaker.main.ui
+package com.example.playlistmaker.media.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.Fragment.MediaLibraryPagerAdapter
+import com.example.playlistmaker.media.adapter.MediaLibraryPagerAdapter
 import com.example.playlistmaker.databinding.ActivityMediaLibraryBinding
 import com.google.android.material.tabs.TabLayoutMediator
 

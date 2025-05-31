@@ -6,8 +6,7 @@
     android:id="@+id/playlists_fragment_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="@color/white">
+    android:background="@color/color_background">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_playlists"
@@ -21,13 +20,14 @@
 
     <TextView
         android:id="@+id/refresh_button"
-        style="@style/refresh_button_style"
-        android:layout_marginBottom="46dp"
+        style="@style/refresh_fragment_style"
         android:text="Новый плейлист"
         app:layout_constraintBottom_toTopOf="@+id/image_placeholder_playlists"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="46dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/image_placeholder_playlists"
@@ -35,20 +35,18 @@
         android:layout_height="120dp"
         android:src="@drawable/error_search"
         android:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/text_placeholder_playlists"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="106dp"/>
 
     <TextView
         android:id="@+id/text_placeholder_playlists"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Вы не создал ни одного плейлиста"
-        android:textColor="@color/black"
-        android:textSize="16sp"
+        android:text="Вы не создали\nни одного плейлиста"
+        style="@style/error_fragment_text_style"
         android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/image_placeholder_playlists"
         app:layout_constraintStart_toStartOf="parent"

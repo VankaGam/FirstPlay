@@ -30,5 +30,6 @@
         app:itemIconTint="@color/color_state"
         app:itemTextColor="@color/color_state"
         app:itemTextAppearanceActive="@style/TextAppearance.BottomNav.Active"
+        app:itemTextAppearanceInactive="@style/TextAppearance.BottomNav.Inactive"
         app:menu="@menu/bottom_nav_menu" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

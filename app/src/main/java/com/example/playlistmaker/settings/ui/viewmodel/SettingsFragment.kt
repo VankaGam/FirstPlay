@@ -3,41 +3,53 @@ package com.example.playlistmaker.settings.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
+
+    companion object {
+        fun newInstance(): SettingsFragment = SettingsFragment()
+    }
+
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: SettingsViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.controlp)
-        val backButton = findViewById<ImageButton>(R.id.back)
-        val shareButton = findViewById<LinearLayout>(R.id.share)
-        val supportButton = findViewById<LinearLayout>(R.id.support)
-        val termsButton = findViewById<LinearLayout>(R.id.agreement)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        viewModel.isDarkMode.observe(this) { enabled ->
-            themeSwitcher.isChecked = enabled
+        val themeSwitcher: SwitchMaterial = binding.controlp
+        val shareButton = binding.share
+        val supportButton = binding.support
+        val termsButton = binding.agreement
 
+        viewModel.isDarkMode.observe(viewLifecycleOwner) { enabled ->
             themeSwitcher.isChecked =
                 AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
             themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.switchTheme(isChecked)
-                recreate()
+                requireActivity().recreate()
             }
-
-            backButton.setOnClickListener { finish() }
 
             shareButton.setOnClickListener {
                 val intent = Intent(Intent.ACTION_SEND).apply {
@@ -57,10 +69,17 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             termsButton.setOnClickListener {
-                val intent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.android_ofter_url)))
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(getString(R.string.android_ofter_url))
+                )
                 startActivity(intent)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

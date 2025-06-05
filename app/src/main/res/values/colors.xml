@@ -27,4 +27,5 @@
     <color name="yp_blue">#3772E7</color>
     <color name="switch_thumb_color">#AEAFB4</color>
     <color name="switch_track_color">#E6E8EB</color>
+    <color name="white_navigator">#E6E8EB</color>
 </resources>

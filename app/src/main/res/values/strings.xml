@@ -22,4 +22,6 @@ https://practicum.yandex.ru/profile/android-developer-plus/</string>
     <string name="were_looking">Вы искали</string>
     <string name="clear_history">Очистить историю</string>
     <string name="music_time">00:00</string>
+    <string name="tab_favorites">Избранное</string>
+    <string name="tab_playlists">Плейлисты</string>
 </resources>

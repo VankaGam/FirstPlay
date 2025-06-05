@@ -53,8 +53,6 @@ class SearchFragment : Fragment() {
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
-
-        // 2) Настраиваем адаптер для истории
         historyAdapter = TrackAdapter(emptyList()) { track ->
             viewModel.saveTrack(track)
             val bundle = Bundle().apply {

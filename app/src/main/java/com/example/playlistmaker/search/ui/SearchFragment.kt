@@ -1,5 +1,8 @@
 package com.example.playlistmaker.search.ui
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,20 +21,18 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
-    companion object {
-        fun newInstance(): SearchFragment = SearchFragment()
-    }
-
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModel()
+
     private lateinit var adapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
     private var textWatcher: TextWatcher? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
@@ -40,7 +41,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter(emptyList()) { track: Track ->
+        adapter = TrackAdapter(emptyList()) { track ->
             viewModel.saveTrack(track)
             val bundle = Bundle().apply {
                 putSerializable("track", track)
@@ -53,7 +54,8 @@ class SearchFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
-        historyAdapter = TrackAdapter(emptyList()) { track: Track ->
+        // 2) Настраиваем адаптер для истории
+        historyAdapter = TrackAdapter(emptyList()) { track ->
             viewModel.saveTrack(track)
             val bundle = Bundle().apply {
                 putSerializable("track", track)
@@ -68,14 +70,28 @@ class SearchFragment : Fragment() {
 
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+
             override fun afterTextChanged(s: Editable?) {
                 val query = s?.toString() ?: ""
                 binding.clearButton.visibility = if (query.isNotEmpty()) View.VISIBLE else View.GONE
+
+                binding.progressBar.visibility = View.GONE
+                binding.emptyPlaceholder.visibility = View.GONE
+                binding.errorPlaceholder.visibility = View.GONE
+
                 if (query.isEmpty()) {
                     viewModel.loadHistory()
                 } else {
-                    viewModel.search(query)
+                    if (!isNetworkAvailable()) {
+                        binding.historyContainer.visibility = View.GONE
+                        binding.recyclerView.visibility = View.GONE
+                        binding.errorPlaceholder.visibility = View.VISIBLE
+                    } else {
+                        binding.errorPlaceholder.visibility = View.GONE
+                        viewModel.search(query)
+                    }
                 }
             }
         }
@@ -83,12 +99,14 @@ class SearchFragment : Fragment() {
 
         binding.searchEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.searchEditText.text.isEmpty()) {
+                binding.errorPlaceholder.visibility = View.GONE
                 viewModel.loadHistory()
             }
         }
 
         binding.clearButton.setOnClickListener {
             binding.searchEditText.text.clear()
+            binding.errorPlaceholder.visibility = View.GONE
             viewModel.loadHistory()
         }
 
@@ -99,15 +117,16 @@ class SearchFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
             binding.errorPlaceholder.visibility = if (state.isError) View.VISIBLE else View.GONE
-            binding.emptyPlaceholder.visibility = if (state.isEmpty) View.VISIBLE else View.GONE
 
             val queryNotEmpty = state.query.isNotEmpty()
             val noResults = state.tracks.isEmpty()
+
             binding.emptyPlaceholder.visibility =
                 if (queryNotEmpty && noResults && !state.isLoading && !state.isError)
                     View.VISIBLE
                 else
                     View.GONE
+
             if (state.query.isEmpty()) {
                 binding.emptyPlaceholder.visibility = View.GONE
                 binding.recyclerView.visibility = View.GONE
@@ -140,5 +159,13 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
         textWatcher?.let { binding.searchEditText.removeTextChangedListener(it) }
         _binding = null
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val cm = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = cm.activeNetwork ?: return false
+        val capabilities = cm.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 }

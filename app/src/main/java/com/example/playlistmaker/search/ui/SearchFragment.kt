@@ -101,11 +101,17 @@ class SearchFragment : Fragment() {
             binding.errorPlaceholder.visibility = if (state.isError) View.VISIBLE else View.GONE
             binding.emptyPlaceholder.visibility = if (state.isEmpty) View.VISIBLE else View.GONE
 
-            if (state.query.isEmpty() && state.showHistory) {
-                binding.historyContainer.visibility = View.VISIBLE
-                historyAdapter.updateTracks(state.history)
-                binding.recyclerView.visibility = View.GONE
-            } else if (state.query.isNotEmpty()) {
+            if (state.query.isEmpty()) {
+                if (state.showHistory) {
+                    binding.historyContainer.visibility = View.VISIBLE
+                    historyAdapter.updateTracks(state.history)
+                    binding.recyclerView.visibility = View.GONE
+                } else {
+                    binding.historyContainer.visibility = View.GONE
+                    historyAdapter.updateTracks(emptyList())
+                    binding.recyclerView.visibility = View.GONE
+                }
+            } else {
                 binding.historyContainer.visibility = View.GONE
                 adapter.updateTracks(state.tracks)
                 binding.recyclerView.visibility = View.VISIBLE

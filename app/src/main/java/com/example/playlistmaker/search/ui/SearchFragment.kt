@@ -101,20 +101,35 @@ class SearchFragment : Fragment() {
             binding.errorPlaceholder.visibility = if (state.isError) View.VISIBLE else View.GONE
             binding.emptyPlaceholder.visibility = if (state.isEmpty) View.VISIBLE else View.GONE
 
+            val queryNotEmpty = state.query.isNotEmpty()
+            val noResults = state.tracks.isEmpty()
+            binding.emptyPlaceholder.visibility =
+                if (queryNotEmpty && noResults && !state.isLoading && !state.isError)
+                    View.VISIBLE
+                else
+                    View.GONE
             if (state.query.isEmpty()) {
-                if (state.showHistory) {
+                binding.emptyPlaceholder.visibility = View.GONE
+                binding.recyclerView.visibility = View.GONE
+
+                if (state.showHistory && state.history.isNotEmpty()) {
                     binding.historyContainer.visibility = View.VISIBLE
                     historyAdapter.updateTracks(state.history)
-                    binding.recyclerView.visibility = View.GONE
                 } else {
                     binding.historyContainer.visibility = View.GONE
                     historyAdapter.updateTracks(emptyList())
-                    binding.recyclerView.visibility = View.GONE
                 }
+
             } else {
                 binding.historyContainer.visibility = View.GONE
-                adapter.updateTracks(state.tracks)
-                binding.recyclerView.visibility = View.VISIBLE
+
+                if (noResults) {
+                    binding.recyclerView.visibility = View.GONE
+                } else {
+                    binding.emptyPlaceholder.visibility = View.GONE
+                    adapter.updateTracks(state.tracks)
+                    binding.recyclerView.visibility = View.VISIBLE
+                }
             }
         }
 

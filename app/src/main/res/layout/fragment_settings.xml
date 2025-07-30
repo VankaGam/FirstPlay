@@ -16,19 +16,6 @@
         <LinearLayout
             style="@style/LinerStyle">
 
-            <ImageButton
-                android:id="@+id/back"
-                android:layout_width="@dimen/layout_width_back"
-                android:layout_height="@dimen/layout_width_back"
-                android:src="@drawable/baseline_arrow_back_24"
-                android:scaleType="centerCrop"
-                android:drawablePadding="@dimen/margin_bottom_back"
-                android:backgroundTint="@color/color_background"
-                android:layout_marginStart="@dimen/margin_bottom_back"
-                android:layout_marginTop="@dimen/margin_bottom_back"
-                android:layout_marginBottom="@dimen/margin_bottom_back"
-                tools:ignore="ContentDescription" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

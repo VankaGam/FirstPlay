@@ -25,9 +25,12 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
+
     private val viewModel: SearchViewModel by viewModel()
+
     private lateinit var adapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
+
     private var searchJob: Job? = null
     private var clickJob: Job? = null
     private var textWatcher: TextWatcher? = null
@@ -48,48 +51,56 @@ class SearchFragment : Fragment() {
             clickJob = lifecycleScope.launch {
                 delay(300)
                 viewModel.saveTrack(track)
-                val bundle = Bundle().apply { putSerializable("track", track) }
-                findNavController().navigate(R.id.action_search_to_player, bundle)
+                findNavController()
+                    .navigate(R.id.action_search_to_player, Bundle().apply {
+                        putSerializable("track", track)
+                    })
             }
         }
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@SearchFragment.adapter
+        }
 
         historyAdapter = TrackAdapter(emptyList()) { track ->
             clickJob?.cancel()
             clickJob = lifecycleScope.launch {
                 delay(300)
                 viewModel.saveTrack(track)
-                val bundle = Bundle().apply { putSerializable("track", track) }
-                findNavController().navigate(R.id.action_search_to_player, bundle)
+                findNavController()
+                    .navigate(R.id.action_search_to_player, Bundle().apply {
+                        putSerializable("track", track)
+                    })
             }
         }
-        binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.historyRecyclerView.adapter = historyAdapter
+        binding.historyRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = historyAdapter
+        }
 
         textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
             override fun afterTextChanged(s: Editable?) {
                 val query = s?.toString() ?: ""
-                binding.clearButton.visibility = if (query.isNotEmpty()) View.VISIBLE else View.GONE
+                binding.clearButton.visibility =
+                    if (query.isNotEmpty()) View.VISIBLE else View.GONE
+
                 binding.progressBar.visibility = View.GONE
                 binding.emptyPlaceholder.visibility = View.GONE
                 binding.errorPlaceholder.visibility = View.GONE
+
                 searchJob?.cancel()
                 searchJob = lifecycleScope.launch {
                     if (query.isEmpty()) {
                         viewModel.loadHistory()
                     } else {
-                        delay(500)
+                        delay(2000)
                         if (!isNetworkAvailable()) {
-                            binding.historyContainer.visibility = View.GONE
+                            binding.historyContainer.visibility  = View.GONE
                             binding.recyclerView.visibility = View.GONE
-                            binding.errorPlaceholder.visibility = View.VISIBLE
+                            binding.errorPlaceholder.visibility  = View.VISIBLE
                         } else {
-                            binding.errorPlaceholder.visibility = View.GONE
                             viewModel.search(query)
                         }
                     }
@@ -98,15 +109,8 @@ class SearchFragment : Fragment() {
         }
         binding.searchEditText.addTextChangedListener(textWatcher)
 
-        binding.searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.searchEditText.text.isEmpty()) {
-                binding.errorPlaceholder.visibility = View.GONE
-                viewModel.loadHistory()
-            }
-        }
-
         binding.clearButton.setOnClickListener {
-            binding.searchEditText.text.clear()
+            binding.searchEditText.text?.clear()
             binding.errorPlaceholder.visibility = View.GONE
             viewModel.loadHistory()
         }
@@ -115,45 +119,52 @@ class SearchFragment : Fragment() {
             viewModel.clearHistory()
         }
 
+        binding.refreshButton.setOnClickListener {
+            val q = binding.searchEditText.text.toString()
+            if (q.isEmpty()) viewModel.loadHistory() else viewModel.search(q)
+        }
+
+        restoreSearchState()
+
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
             binding.errorPlaceholder.visibility = if (state.isError) View.VISIBLE else View.GONE
 
-            val queryNotEmpty = state.query.isNotEmpty()
+            val hasQuery  = state.query.isNotEmpty()
             val noResults = state.tracks.isEmpty()
 
             binding.emptyPlaceholder.visibility =
-                if (queryNotEmpty && noResults && !state.isLoading && !state.isError)
-                    View.VISIBLE
-                else
-                    View.GONE
+                if (hasQuery && noResults && !state.isLoading && !state.isError)
+                    View.VISIBLE else View.GONE
 
             if (state.query.isEmpty()) {
-                binding.emptyPlaceholder.visibility = View.GONE
                 binding.recyclerView.visibility = View.GONE
-
                 if (state.showHistory && state.history.isNotEmpty()) {
                     binding.historyContainer.visibility = View.VISIBLE
                     historyAdapter.updateTracks(state.history)
                 } else {
                     binding.historyContainer.visibility = View.GONE
-                    historyAdapter.updateTracks(emptyList())
                 }
-
             } else {
                 binding.historyContainer.visibility = View.GONE
-
                 if (noResults) {
                     binding.recyclerView.visibility = View.GONE
                 } else {
-                    binding.emptyPlaceholder.visibility = View.GONE
                     adapter.updateTracks(state.tracks)
                     binding.recyclerView.visibility = View.VISIBLE
                 }
             }
-        }
 
-        viewModel.loadHistory()
+            binding.clearHistoryButton.visibility =
+                if (state.showHistory) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun restoreSearchState() {
+        val last = viewModel.state.value ?: return
+        binding.searchEditText.setText(last.query)
+        if (last.query.isEmpty()) viewModel.loadHistory()
+        else viewModel.search(last.query)
     }
 
     override fun onDestroyView() {
@@ -165,10 +176,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun isNetworkAvailable(): Boolean {
-        val cm = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = cm.activeNetwork ?: return false
-        val capabilities = cm.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        val cm = requireContext()
+            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val net = cm.activeNetwork ?: return false
+        val caps = cm.getNetworkCapabilities(net) ?: return false
+        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 }

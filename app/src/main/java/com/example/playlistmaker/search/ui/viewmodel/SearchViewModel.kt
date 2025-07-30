@@ -22,12 +22,12 @@ class SearchViewModel(
     fun search(query: String) {
         viewModelScope.launch {
             _state.value = _state.value!!.copy(
-                query       = query,
-                isLoading   = true,
-                isError     = false,
-                isEmpty     = false,
+                query = query,
+                isLoading = true,
+                isError = false,
+                isEmpty = false,
                 showHistory = false,
-                tracks      = emptyList()
+                tracks = emptyList()
             )
             searchTracks(query)
                 .onStart {
@@ -35,14 +35,14 @@ class SearchViewModel(
                 .catch { e ->
                     _state.value = _state.value!!.copy(
                         isLoading = false,
-                        isError   = true
+                        isError = true
                     )
                 }
                 .collect { result ->
                     _state.value = _state.value!!.copy(
                         isLoading = false,
-                        tracks    = result,
-                        isEmpty   = result.isEmpty()
+                        tracks = result,
+                        isEmpty = result.isEmpty()
                     )
                 }
         }

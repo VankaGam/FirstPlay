@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/refresh_button"
+        android:id="@+id/refreshButton"
         style="@style/refresh_fragment_style"
         android:text="Новый плейлист"
         app:layout_constraintBottom_toTopOf="@+id/image_placeholder_playlists"

@@ -36,7 +36,7 @@ class PlaylistsFragment : Fragment() {
         binding.textPlaceholderPlaylists.visibility = View.VISIBLE
 
         binding.refreshButton.setOnClickListener {
-            //логика создания плейлиста
+            //логика создания плейлиста!
         }
     }
 

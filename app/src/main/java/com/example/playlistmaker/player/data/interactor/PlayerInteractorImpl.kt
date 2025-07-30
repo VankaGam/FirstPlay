@@ -6,21 +6,25 @@ import com.example.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class PlayerInteractorImpl(private val mediaPlayerFactory: MediaPlayerFactory) : PlayerInteractor {
+class PlayerInteractorImpl(
+    private val mediaPlayerFactory: MediaPlayerFactory
+) : PlayerInteractor {
+
     private var player: MediaPlayer? = null
     private val _isPlaying = MutableStateFlow(false)
     override val isPlaying = _isPlaying.asStateFlow()
-
     private val _position = MutableStateFlow(0)
     override val position = _position.asStateFlow()
-
-    private var scope = CoroutineScope(Dispatchers.Main)
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private var updateJob: Job? = null
 
     override fun prepare(track: Track) {
         release()
@@ -31,18 +35,11 @@ class PlayerInteractorImpl(private val mediaPlayerFactory: MediaPlayerFactory) :
             setOnCompletionListener {
                 _isPlaying.value = false
                 _position.value = 0
-                scope.cancel()
+                stopPositionUpdates()
             }
         }
         _isPlaying.value = true
-        scope = CoroutineScope(Dispatchers.Main).also { s ->
-            s.launch {
-                while (player != null) {
-                    _position.value = player?.currentPosition ?: 0
-                    delay(500)
-                }
-            }
-        }
+        startPositionUpdates()
     }
 
     override fun playPause() {
@@ -50,16 +47,33 @@ class PlayerInteractorImpl(private val mediaPlayerFactory: MediaPlayerFactory) :
             if (it.isPlaying) {
                 it.pause()
                 _isPlaying.value = false
+                stopPositionUpdates()
             } else {
                 it.start()
                 _isPlaying.value = true
+                startPositionUpdates()
             }
         }
     }
 
     override fun release() {
-        scope.cancel()
+        stopPositionUpdates()
         player?.release()
         player = null
+    }
+
+    private fun startPositionUpdates() {
+        updateJob?.cancel()
+        updateJob = scope.launch {
+            while (_isPlaying.value) {
+                _position.value = player?.currentPosition ?: 0
+                delay(300)
+            }
+        }
+    }
+
+    private fun stopPositionUpdates() {
+        updateJob?.cancel()
+        updateJob = null
     }
 }

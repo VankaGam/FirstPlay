@@ -60,7 +60,6 @@ class PlayerFragment : Fragment() {
                     if (st.isPlaying) R.drawable.knob_pause else R.drawable.play_button
                 )
                 binding.currentTime.text = formatTime(st.position)
-                // binding.seekBar.progress = st.position  (если есть seekBar)
             }
         }
 

@@ -10,22 +10,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: SearchViewModel by viewModel()
-
     private lateinit var adapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
+    private var searchJob: Job? = null
+    private var clickJob: Job? = null
     private var textWatcher: TextWatcher? = null
 
     override fun onCreateView(
@@ -40,53 +44,54 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = TrackAdapter(emptyList()) { track ->
-            viewModel.saveTrack(track)
-            val bundle = Bundle().apply {
-                putSerializable("track", track)
+            clickJob?.cancel()
+            clickJob = lifecycleScope.launch {
+                delay(300)
+                viewModel.saveTrack(track)
+                val bundle = Bundle().apply { putSerializable("track", track) }
+                findNavController().navigate(R.id.action_search_to_player, bundle)
             }
-            findNavController().navigate(
-                R.id.action_search_to_player,
-                bundle
-            )
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
+
         historyAdapter = TrackAdapter(emptyList()) { track ->
-            viewModel.saveTrack(track)
-            val bundle = Bundle().apply {
-                putSerializable("track", track)
+            clickJob?.cancel()
+            clickJob = lifecycleScope.launch {
+                delay(300)
+                viewModel.saveTrack(track)
+                val bundle = Bundle().apply { putSerializable("track", track) }
+                findNavController().navigate(R.id.action_search_to_player, bundle)
             }
-            findNavController().navigate(
-                R.id.action_search_to_player,
-                bundle
-            )
         }
         binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.historyRecyclerView.adapter = historyAdapter
 
         textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
                 val query = s?.toString() ?: ""
                 binding.clearButton.visibility = if (query.isNotEmpty()) View.VISIBLE else View.GONE
-
                 binding.progressBar.visibility = View.GONE
                 binding.emptyPlaceholder.visibility = View.GONE
                 binding.errorPlaceholder.visibility = View.GONE
-
-                if (query.isEmpty()) {
-                    viewModel.loadHistory()
-                } else {
-                    if (!isNetworkAvailable()) {
-                        binding.historyContainer.visibility = View.GONE
-                        binding.recyclerView.visibility = View.GONE
-                        binding.errorPlaceholder.visibility = View.VISIBLE
+                searchJob?.cancel()
+                searchJob = lifecycleScope.launch {
+                    if (query.isEmpty()) {
+                        viewModel.loadHistory()
                     } else {
-                        binding.errorPlaceholder.visibility = View.GONE
-                        viewModel.search(query)
+                        delay(500)
+                        if (!isNetworkAvailable()) {
+                            binding.historyContainer.visibility = View.GONE
+                            binding.recyclerView.visibility = View.GONE
+                            binding.errorPlaceholder.visibility = View.VISIBLE
+                        } else {
+                            binding.errorPlaceholder.visibility = View.GONE
+                            viewModel.search(query)
+                        }
                     }
                 }
             }
@@ -154,6 +159,8 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         textWatcher?.let { binding.searchEditText.removeTextChangedListener(it) }
+        searchJob?.cancel()
+        clickJob?.cancel()
         _binding = null
     }
 

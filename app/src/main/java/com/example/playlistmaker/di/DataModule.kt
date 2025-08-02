@@ -1,6 +1,13 @@
 package com.example.playlistmaker.di
 
+import android.app.Application
 import android.content.Context
+import androidx.room.Room
+import com.example.playlistmaker.data.db.AppDatabase
+import com.example.playlistmaker.data.db.FavoriteTrackDao
+import com.example.playlistmaker.data.mapper.FavoriteTrackMapper
+import com.example.playlistmaker.domain.interactor.FavoritesInteractor
+import com.example.playlistmaker.domain.interactor.FavoritesInteractorImpl
 import com.example.playlistmaker.search.data.local.SearchHistoryStorage
 import com.example.playlistmaker.search.data.network.ApiService
 import com.example.playlistmaker.search.data.network.RetrofitInstance
@@ -31,4 +38,14 @@ val dataModule = module {
             gson = get()
         )
     }
+    single {
+        Room.databaseBuilder(
+            get<Application>(),
+            AppDatabase::class.java,
+            "playlist_maker_db"
+        ).build()
+    }
+    single { get<AppDatabase>().favoriteTrackDao() }
+    single<FavoritesInteractor> { FavoritesInteractorImpl(get()) }
+    single { FavoriteTrackMapper() }
 }

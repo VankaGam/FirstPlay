@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.data.repository.FavoritesRepository
+import com.example.playlistmaker.data.repository.FavoritesRepositoryImpl
 import com.example.playlistmaker.search.domain.repository.TrackRepository
 import com.example.playlistmaker.search.data.repository.TrackRepositoryImpl
 import com.example.playlistmaker.search.domain.repository.SearchHistoryRepository
@@ -28,5 +30,12 @@ val repositoryModule = module {
 
     factory<PlayerRepository> {
         PlayerRepositoryImpl(get())
+    }
+
+    single<FavoritesRepository> {
+        FavoritesRepositoryImpl(
+            dao = get(),
+            mapper = get()
+        )
     }
 }

@@ -1,7 +1,9 @@
 package com.example.playlistmaker
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -32,6 +34,17 @@ class RootActivity : AppCompatActivity() {
         )
 
         val bottomNav: BottomNavigationView = binding.bottomNav
+        val bottomDivider = binding.bottomDivider
         bottomNav.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val isPlayer = destination.id == R.id.playerFragment
+            binding.bottomNav.visibility  = if (isPlayer) View.GONE else View.VISIBLE
+            binding.bottomDivider.visibility = if (isPlayer) View.GONE else View.VISIBLE
+            val navHostView = findViewById<View>(R.id.nav_host_fragment)
+            val params = navHostView.layoutParams as CoordinatorLayout.LayoutParams
+            val marginDp = if (isPlayer) 0 else 57
+            params.bottomMargin = (marginDp * resources.displayMetrics.density).toInt()
+            navHostView.layoutParams = params
+        }
     }
 }

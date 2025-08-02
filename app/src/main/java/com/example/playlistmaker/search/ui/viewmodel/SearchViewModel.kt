@@ -4,6 +4,8 @@ import androidx.lifecycle.*
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.usecase.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -27,20 +29,22 @@ class SearchViewModel(
                 showHistory = false,
                 tracks = emptyList()
             )
-
-            try {
-                val result = withContext(Dispatchers.IO) { searchTracks(query) }
-                _state.value = _state.value!!.copy(
-                    isLoading = false,
-                    tracks = result,
-                    isEmpty = result.isEmpty()
-                )
-            } catch (e: Exception) {
-                _state.value = _state.value!!.copy(
-                    isLoading = false,
-                    isError = true
-                )
-            }
+            searchTracks(query)
+                .onStart {
+                }
+                .catch { e ->
+                    _state.value = _state.value!!.copy(
+                        isLoading = false,
+                        isError = true
+                    )
+                }
+                .collect { result ->
+                    _state.value = _state.value!!.copy(
+                        isLoading = false,
+                        tracks = result,
+                        isEmpty = result.isEmpty()
+                    )
+                }
         }
     }
 

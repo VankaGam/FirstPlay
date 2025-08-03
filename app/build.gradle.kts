@@ -4,6 +4,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.0"
     kotlin("kapt")
     id("kotlin-parcelize")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {

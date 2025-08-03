@@ -8,11 +8,13 @@ import com.example.playlistmaker.player.domain.interactor.FavoritesInteractor
 import com.example.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
@@ -21,30 +23,29 @@ class PlayerViewModel(
     initialTrack: Track
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(PlayerState())
-    val state = _state.asStateFlow()
-    private val _track = MutableLiveData<Track>(initialTrack)
-    val track: LiveData<Track> = _track
+    private val _state = MutableStateFlow(PlayerState(track = initialTrack))
+    val state: StateFlow<PlayerState> = _state.asStateFlow()
 
     init {
         interactor.isPlaying
-            .onEach { playing -> updateState(isPlaying = playing) }
+            .onEach { playing ->
+                _state.update { it.copy(isPlaying = playing) }
+            }
             .launchIn(viewModelScope)
 
         interactor.position
-            .onEach { pos -> updateState(position = pos) }
+            .onEach { pos ->
+                _state.update { it.copy(position = pos) }
+            }
             .launchIn(viewModelScope)
 
-        viewModelScope.launch {
-            favoritesInteractor.observeFavorites()
-                .map { list -> list.any { it.trackId == initialTrack.trackId } }
-                .distinctUntilChanged()
-                .collect { isFav ->
-                    val current = _track.value ?: return@collect
-                    current.isFavorite = isFav
-                    _track.postValue(current)
-                }
-        }
+        favoritesInteractor.observeFavorites()
+            .map { favs -> favs.any { it.trackId == initialTrack.trackId } }
+            .distinctUntilChanged()
+            .onEach { isFav ->
+                _state.update { it.copy(isFavorite = isFav) }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun prepare(track: Track) = interactor.prepare(track)
@@ -53,24 +54,15 @@ class PlayerViewModel(
 
     override fun onCleared() = interactor.release()
 
-    private fun updateState(
-        isPlaying: Boolean = _state.value.isPlaying,
-        position: Int = _state.value.position
-    ) {
-        _state.value = PlayerState(isPlaying, position)
-    }
     fun onFavoriteClicked() {
-        val current = _track.value ?: return
+        val current = _state.value.track
         viewModelScope.launch {
-            if (current.isFavorite) {
+            if (_state.value.isFavorite) {
                 favoritesInteractor.removeFromFavorites(current)
-                current.isFavorite = false
             } else {
                 favoritesInteractor.addToFavorites(current)
-                current.isFavorite = true
             }
-            current.isFavorite = !current.isFavorite
-            _track.postValue(current)
+            _state.update { it.copy(isFavorite = !it.isFavorite) }
         }
     }
 

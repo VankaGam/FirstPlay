@@ -5,9 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.playlistmaker.databinding.FragmentFavoritesBinding
 import com.example.playlistmaker.media.ui.viewmodel.FavoritesViewModel
+import com.example.playlistmaker.player.ui.PlayerFragment
+import com.example.playlistmaker.search.ui.TrackAdapter
 
 class FavoritesFragment : Fragment() {
 
@@ -34,9 +38,31 @@ class FavoritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recyclerFavorites.visibility = View.GONE
-        binding.imagePlaceholderFavorites.visibility = View.VISIBLE
-        binding.textPlaceholderFavorites.visibility = View.VISIBLE
+
+        val trackAdapter = TrackAdapter(
+            tracks = emptyList(),
+            onItemClick = { track ->
+            },
+            onFavoriteClick = { track ->
+                favoritesViewModel.onFavoriteClicked(track)
+            }
+        )
+
+        binding.recyclerFavorites.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerFavorites.adapter = trackAdapter
+
+        favoritesViewModel.favorites.observe(viewLifecycleOwner) { list ->
+            if (list.isEmpty()) {
+                binding.recyclerFavorites.visibility = View.GONE
+                binding.imagePlaceholderFavorites.visibility = View.VISIBLE
+                binding.textPlaceholderFavorites.visibility = View.VISIBLE
+            } else {
+                binding.imagePlaceholderFavorites.visibility = View.GONE
+                binding.textPlaceholderFavorites.visibility = View.GONE
+                binding.recyclerFavorites.visibility = View.VISIBLE
+                trackAdapter.updateTracks(list)
+            }
+        }
     }
 
     override fun onDestroyView() {

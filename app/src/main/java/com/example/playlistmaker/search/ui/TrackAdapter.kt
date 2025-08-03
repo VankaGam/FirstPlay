@@ -13,7 +13,8 @@ import com.example.playlistmaker.search.domain.model.Track
 
 class TrackAdapter(
     private var tracks: List<Track>,
-    private val onItemClick: (Track) -> Unit
+    private val onItemClick: (Track) -> Unit,
+    private val onFavoriteClick: (Track) -> Unit = {}
 ) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
     companion object {
@@ -38,13 +39,8 @@ class TrackAdapter(
                 .error(R.drawable.placeholder)
                 .transform(RoundedCorners(4))
                 .into(trackImage)
-
             itemView.setOnClickListener {
-                val currentTime = System.currentTimeMillis()
-                if (currentTime - lastClickTime >= debounceInterval) {
-                    lastClickTime = currentTime
-                    onItemClick(track)
-                }
+                onItemClick(track)
             }
         }
     }

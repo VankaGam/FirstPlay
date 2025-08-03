@@ -42,6 +42,12 @@ class FavoritesFragment : Fragment() {
         val trackAdapter = TrackAdapter(
             tracks = emptyList(),
             onItemClick = { track ->
+                val frag = PlayerFragment.newInstance(track)
+                requireActivity().supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment, frag)
+                    .addToBackStack(null)
+                    .commit()
             },
             onFavoriteClick = { track ->
                 favoritesViewModel.onFavoriteClicked(track)

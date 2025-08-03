@@ -56,7 +56,6 @@ class PlayerViewModel(
                 favoritesInteractor.addToFavorites(current)
                 current.isFavorite = true
             }
-            current.isFavorite = !current.isFavorite
             _track.postValue(current)
         }
     }

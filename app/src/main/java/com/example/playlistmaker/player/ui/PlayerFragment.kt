@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
@@ -14,8 +15,9 @@ import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
-class PlayerFragment : Fragment() {
+class PlayerFragment : Fragment(R.layout.fragment_player) {
 
     companion object {
         private const val ARG_TRACK = "track"
@@ -31,8 +33,12 @@ class PlayerFragment : Fragment() {
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: PlayerViewModel by viewModel()
     private var track: Track? = null
+
+    private val viewModel: PlayerViewModel by viewModel {
+        parametersOf(track!!)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +55,11 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val track = track!!
+
+        updateUI(track)
+        viewModel.prepare(track)
+
         track?.let { t ->
             updateUI(t)
             viewModel.prepare(t)
@@ -63,12 +74,23 @@ class PlayerFragment : Fragment() {
             }
         }
 
+        viewModel.track.observe(viewLifecycleOwner) { track ->
+            binding.addToFavoritesButton.setImageResource(
+                if (track.isFavorite) R.drawable.favorite_track
+                else R.drawable.button_fave_activ
+            )
+        }
+
         binding.playButton.setOnClickListener {
             viewModel.playPause()
         }
 
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
+        }
+
+        binding.addToFavoritesButton.setOnClickListener {
+            viewModel.onFavoriteClicked()
         }
     }
 
@@ -83,6 +105,10 @@ class PlayerFragment : Fragment() {
         Glide.with(this)
             .load(track.getCoverArtwork())
             .into(binding.coverArtwork)
+        binding.addToFavoritesButton.setImageResource(
+            if (track.isFavorite) R.drawable.favorite_track
+            else R.drawable.button_fave_activ
+        )
     }
 
     private fun formatTime(ms: Int): String {

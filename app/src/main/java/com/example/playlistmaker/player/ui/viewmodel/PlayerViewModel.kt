@@ -9,7 +9,9 @@ import com.example.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -32,6 +34,17 @@ class PlayerViewModel(
         interactor.position
             .onEach { pos -> updateState(position = pos) }
             .launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            favoritesInteractor.observeFavorites()
+                .map { list -> list.any { it.trackId == initialTrack.trackId } }
+                .distinctUntilChanged()
+                .collect { isFav ->
+                    val current = _track.value ?: return@collect
+                    current.isFavorite = isFav
+                    _track.postValue(current)
+                }
+        }
     }
 
     fun prepare(track: Track) = interactor.prepare(track)
@@ -56,6 +69,7 @@ class PlayerViewModel(
                 favoritesInteractor.addToFavorites(current)
                 current.isFavorite = true
             }
+            current.isFavorite = !current.isFavorite
             _track.postValue(current)
         }
     }

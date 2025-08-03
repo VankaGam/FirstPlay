@@ -76,8 +76,8 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
 
         viewModel.track.observe(viewLifecycleOwner) { track ->
             binding.addToFavoritesButton.setImageResource(
-                if (track.isFavorite) R.drawable.favorite_track
-                else R.drawable.button_fave_activ
+                if (track.isFavorite) R.drawable.button_fave_activ
+                else R.drawable. favorite_track
             )
         }
 
@@ -106,8 +106,8 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
             .load(track.getCoverArtwork())
             .into(binding.coverArtwork)
         binding.addToFavoritesButton.setImageResource(
-            if (track.isFavorite) R.drawable.favorite_track
-            else R.drawable.button_fave_activ
+            if (track.isFavorite) R.drawable. button_fave_activ
+            else R.drawable.favorite_track
         )
     }
 

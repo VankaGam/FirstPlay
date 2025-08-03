@@ -33,6 +33,4 @@ val viewModelModule = module {
 
     viewModel { PlaylistViewModel() }
     viewModel { FavoritesViewModel() }
-    viewModel { PlayerViewModel(get()) }
-
 }

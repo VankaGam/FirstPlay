@@ -46,7 +46,9 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter(emptyList()) { track ->
+        adapter = TrackAdapter(
+            tracks = emptyList(),
+            onItemClick = { track ->
             clickJob?.cancel()
             clickJob = lifecycleScope.launch {
                 delay(300)
@@ -57,12 +59,15 @@ class SearchFragment : Fragment() {
                     })
             }
         }
+        )
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@SearchFragment.adapter
         }
 
-        historyAdapter = TrackAdapter(emptyList()) { track ->
+        historyAdapter = TrackAdapter(
+            tracks = emptyList(),
+            onItemClick = { track ->
             clickJob?.cancel()
             clickJob = lifecycleScope.launch {
                 delay(300)
@@ -73,6 +78,7 @@ class SearchFragment : Fragment() {
                     })
             }
         }
+        )
         binding.historyRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = historyAdapter

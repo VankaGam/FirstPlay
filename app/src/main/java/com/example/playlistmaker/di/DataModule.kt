@@ -1,6 +1,10 @@
 package com.example.playlistmaker.di
 
+import android.app.Application
 import android.content.Context
+import androidx.room.Room
+import com.example.playlistmaker.media.data.dp.AppDatabase
+import com.example.playlistmaker.media.data.dp.FavoriteTrackDao
 import com.example.playlistmaker.search.data.local.SearchHistoryStorage
 import com.example.playlistmaker.search.data.network.ApiService
 import com.example.playlistmaker.search.data.network.RetrofitInstance
@@ -30,5 +34,19 @@ val dataModule = module {
             sharedPreferences = get(named("search_history_prefs")),
             gson = get()
         )
+    }
+
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            AppDatabase::class.java,
+            "playlist_maker_db"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    single<FavoriteTrackDao> {
+        get<AppDatabase>().favoriteTrackDao()
     }
 }

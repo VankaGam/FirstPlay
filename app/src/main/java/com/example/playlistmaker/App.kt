@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.di.DomainModule
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.repositoryModule
 import com.example.playlistmaker.di.interactorModule
@@ -25,7 +26,8 @@ class App : Application() {
                 interactorModule,
                 viewModelModule,
                 mediaModule,
-                navigationModule
+                navigationModule,
+                DomainModule
             )
         }
 

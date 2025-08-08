@@ -4,6 +4,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.0"
     kotlin("kapt")
     id("kotlin-parcelize")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -68,4 +69,7 @@ dependencies {
     implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation ("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation ("androidx.fragment:fragment-ktx:1.5.6")
+    implementation("androidx.room:room-runtime:2.6.0")
+    kapt("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
 }

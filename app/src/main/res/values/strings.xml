@@ -24,4 +24,8 @@ https://practicum.yandex.ru/profile/android-developer-plus/</string>
     <string name="music_time">00:00</string>
     <string name="tab_favorites">Избранные треки</string>
     <string name="tab_playlists">Плейлисты</string>
+    <string name="dialog_exit_title">Завершить создание плейлиста?</string>
+    <string name="dialog_exit_message">Все несохраненные данные будут потеряны</string>
+    <string name="dialog_cancel">Отмена</string>
+    <string name="dialog_finish">Завершить</string>
 </resources>

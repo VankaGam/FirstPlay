@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.room.Room
 import com.example.playlistmaker.media.data.dp.AppDatabase
 import com.example.playlistmaker.media.data.dp.FavoriteTrackDao
+import com.example.playlistmaker.media.domain.interactor.PlaylistInteractor
+import com.example.playlistmaker.media.domain.repository.PlaylistRepository
+import com.example.playlistmaker.media.domain.repository.PlaylistRepositoryImpl
 import com.example.playlistmaker.search.data.local.SearchHistoryStorage
 import com.example.playlistmaker.search.data.network.ApiService
 import com.example.playlistmaker.search.data.network.RetrofitInstance
@@ -49,4 +52,17 @@ val dataModule = module {
     single<FavoriteTrackDao> {
         get<AppDatabase>().favoriteTrackDao()
     }
+
+    single {
+        get<AppDatabase>().playlistDao()
+    }
+
+    single<PlaylistRepository> {
+        PlaylistRepositoryImpl(get(), get())
+    }
+
+    single {
+        PlaylistInteractor(get())
+    }
+
 }

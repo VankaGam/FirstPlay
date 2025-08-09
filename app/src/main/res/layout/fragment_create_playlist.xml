@@ -34,7 +34,7 @@
         android:layout_height="312dp"
         android:layout_marginTop="42dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/holder_play_list"
+        android:src="@mipmap/punktir_foreground"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/text_title"
         app:layout_constraintStart_toStartOf="parent"

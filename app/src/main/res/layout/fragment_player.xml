@@ -201,22 +201,22 @@
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
-<View
-android:id="@+id/overlay"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/color_background"
-android:visibility="gone"/>
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:clickable="true"/>
 
-<LinearLayout
-android:id="@+id/playlists_bottom_sheet"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-android:background="@color/color_background"
-app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-app:behavior_hideable="true"
-app:behavior_peekHeight="360dp">
+    <LinearLayout
+        android:id="@+id/playlists_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bottom_sheet_bg"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="360dp">
 
     <ImageView
         android:layout_width="wrap_content"

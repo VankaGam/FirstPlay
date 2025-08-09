@@ -7,7 +7,8 @@
       android:strokeWidth="1"
       android:pathData="M8,0.5L304,0.5A7.5,7.5 0,0 1,311.5 8L311.5,304A7.5,7.5 0,0 1,304 311.5L8,311.5A7.5,7.5 0,0 1,0.5 304L0.5,8A7.5,7.5 0,0 1,8 0.5z"
       android:fillColor="#00000000"
-      android:strokeColor="#AEAFB4"/>
+      android:strokeColor="#AEAFB4"
+      />
   <group>
     <clip-path
         android:pathData="M114,106L198,106A8,8 0,0 1,206 114L206,198A8,8 0,0 1,198 206L114,206A8,8 0,0 1,106 198L106,114A8,8 0,0 1,114 106z"/>

@@ -1,5 +1,6 @@
 package com.example.playlistmaker.player.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.graphics.ColorUtils
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +30,7 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -105,16 +109,36 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         val rv = requireView().findViewById<RecyclerView>(R.id.rvPlaylists)
         val btnNew = requireView().findViewById<TextView>(R.id.btnNewPlaylist)
 
-        bottomSheetBehavior = BottomSheetBehavior.from(sheet).apply { state = BottomSheetBehavior.STATE_HIDDEN }
-        bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
-            override fun onStateChanged(bottom: View, newState: Int) {
-                overlay.visibility = if (newState == BottomSheetBehavior.STATE_HIDDEN) View.GONE else View.VISIBLE
+        bottomSheetBehavior = BottomSheetBehavior.from(sheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        val scrimColor = Color.parseColor("#1A1B22")
+        overlay.setBackgroundColor(scrimColor)
+
+        val SCRIM_MIN = 0.20f
+        val SCRIM_MAX = 0.60f
+
+        fun showScrim(a: Float) {
+            val x = a.coerceIn(0f, 1f)
+            overlay.visibility = if (x == 0f) View.GONE else View.VISIBLE
+            overlay.alpha = x
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> showScrim(0f)
+                    BottomSheetBehavior.STATE_COLLAPSED -> showScrim(SCRIM_MIN)
+                    BottomSheetBehavior.STATE_HALF_EXPANDED,
+                    BottomSheetBehavior.STATE_EXPANDED -> showScrim(SCRIM_MAX)
+                }
             }
-            override fun onSlide(bottom: View, slideOffset: Float) {
-                overlay.alpha = ((slideOffset + 1f) / 2f).coerceIn(0f, 1f)
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val p = slideOffset.coerceIn(0f, 1f)
+                showScrim(SCRIM_MIN + (SCRIM_MAX - SCRIM_MIN) * p)
             }
         })
-
         sheetAdapter = PlaylistsBottomSheetAdapter { playlist ->
             viewModel.onAddCurrentTrackTo(playlist)
         }

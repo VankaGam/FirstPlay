@@ -5,14 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStateAtLeast
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
+import com.example.playlistmaker.RootActivity
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.player.ui.PlaylistsBottomSheetAdapter.PlaylistsBottomSheetAdapter
 import com.example.playlistmaker.player.ui.viewmodel.PlayerState
@@ -48,9 +55,17 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
     private lateinit var sheetAdapter: PlaylistsBottomSheetAdapter
     private val viewModel: PlayerViewModel by viewModel { parametersOf(initialTrack) }
 
+    private fun navControllerFromActivity(): NavController? {
+        val fm = requireActivity().supportFragmentManager
+        val host = fm.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+        return host?.navController
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentPlayerBinding.bind(view)
         viewModel.prepare(initialTrack)
+
+        val navController = findNavController()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.state.collectLatest { st: PlayerState ->
@@ -88,7 +103,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         val overlay = requireView().findViewById<View>(R.id.overlay)
         val sheet = requireView().findViewById<LinearLayout>(R.id.playlists_bottom_sheet)
         val rv = requireView().findViewById<RecyclerView>(R.id.rvPlaylists)
-        val btnNew = requireView().findViewById<MaterialButton>(R.id.btnNewPlaylist)
+        val btnNew = requireView().findViewById<TextView>(R.id.btnNewPlaylist)
 
         bottomSheetBehavior = BottomSheetBehavior.from(sheet).apply { state = BottomSheetBehavior.STATE_HIDDEN }
         bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
@@ -118,8 +133,19 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         }
 
         btnNew.setOnClickListener {
+            val cb = object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        bottomSheetBehavior.removeBottomSheetCallback(this)
+                        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+                            findNavController().navigate(R.id.createPlaylistFragment)
+                        }
+                    }
+                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            }
+            bottomSheetBehavior.addBottomSheetCallback(cb)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            findNavController().navigate(R.id.createPlaylistFragment)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -154,4 +180,15 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? RootActivity)?.setBottomNavVisible(false)
+    }
+
+    override fun onPause() {
+        (activity as? RootActivity)?.setBottomNavVisible(true)
+        super.onPause()
+    }
+
 }

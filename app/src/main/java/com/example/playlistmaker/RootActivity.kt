@@ -48,4 +48,15 @@ class RootActivity : AppCompatActivity() {
             navHostView.layoutParams = params
         }
     }
+
+    fun setBottomNavVisible(visible: Boolean) {
+        binding.bottomNav.visibility = if (visible) View.VISIBLE else View.GONE
+        binding.bottomDivider.visibility = if (visible) View.VISIBLE else View.GONE
+
+        val navHostView = findViewById<View>(R.id.nav_host_fragment)
+        val params = navHostView.layoutParams as CoordinatorLayout.LayoutParams
+        val marginDp = if (visible) 57 else 0
+        params.bottomMargin = (marginDp * resources.displayMetrics.density).toInt()
+        navHostView.layoutParams = params
+    }
 }

@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -21,9 +22,9 @@ class RootActivity : AppCompatActivity() {
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val hostFragment = supportFragmentManager
+        val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = hostFragment.navController
+        navController = navHostFragment.navController
 
         appBarConfig = AppBarConfiguration(
             setOf(
@@ -38,6 +39,7 @@ class RootActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isPlayer = destination.id == R.id.playerFragment
+
             binding.bottomNav.visibility  = if (isPlayer) View.GONE else View.VISIBLE
             binding.bottomDivider.visibility = if (isPlayer) View.GONE else View.VISIBLE
             val navHostView = findViewById<View>(R.id.nav_host_fragment)
@@ -46,5 +48,16 @@ class RootActivity : AppCompatActivity() {
             params.bottomMargin = (marginDp * resources.displayMetrics.density).toInt()
             navHostView.layoutParams = params
         }
+    }
+
+    fun setBottomNavVisible(visible: Boolean) {
+        binding.bottomNav.visibility = if (visible) View.VISIBLE else View.GONE
+        binding.bottomDivider.visibility = if (visible) View.VISIBLE else View.GONE
+
+        val navHostView = findViewById<View>(R.id.nav_host_fragment)
+        val params = navHostView.layoutParams as CoordinatorLayout.LayoutParams
+        val marginDp = if (visible) 57 else 0
+        params.bottomMargin = (marginDp * resources.displayMetrics.density).toInt()
+        navHostView.layoutParams = params
     }
 }

@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,12 +44,10 @@ class FavoritesFragment : Fragment() {
         val trackAdapter = TrackAdapter(
             tracks = emptyList(),
             onItemClick = { track ->
-                val frag = PlayerFragment.newInstance(track)
-                requireActivity().supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.nav_host_fragment, frag)
-                    .addToBackStack(null)
-                    .commit()
+                val args = bundleOf("track" to track)
+                requireActivity()
+                    .findNavController(R.id.nav_host_fragment)
+                    .navigate(R.id.playerFragment, args)
             },
             onFavoriteClick = { track ->
                 favoritesViewModel.onFavoriteClicked(track)

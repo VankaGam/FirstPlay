@@ -6,12 +6,24 @@
     app:startDestination="@id/mediaLibraryFragment">
 
     <fragment
+        android:id="@+id/playlistsFragment"
+        android:name="com.example.playlistmaker.media.ui.Fragment.PlaylistsFragment"
+        android:label="Плейлисты">
+        <action
+            android:id="@+id/action_playlists_to_player"
+            app:destination="@id/playerFragment"/>
+        <action
+            android:id="@+id/action_playlists_to_createPlaylist"
+            app:destination="@id/createPlaylistFragment"/>
+    </fragment>
+
+    <fragment
         android:id="@+id/mediaLibraryFragment"
         android:name="com.example.playlistmaker.media.ui.MediaLibraryFragment"
         android:label="Медиатека" >
         <action
-            android:id="@+id/action_media_to_player"
-            app:destination="@id/playerFragment" />
+            android:id="@+id/action_mediaLibrary_to_createPlaylist"
+            app:destination="@id/createPlaylistFragment" />
     </fragment>
 
     <fragment
@@ -32,5 +44,14 @@
         android:id="@+id/playerFragment"
         android:name="com.example.playlistmaker.player.ui.PlayerFragment"
         android:label="Плеер">
+        <action
+            android:id="@+id/action_player_to_createPlaylist"
+            app:destination="@id/createPlaylistFragment"
+            app:launchSingleTop="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.Fragment.CreatePlaylistFragment"
+        android:label="Новый плейлист" />
 </navigation>

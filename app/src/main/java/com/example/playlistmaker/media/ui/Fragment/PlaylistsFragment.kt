@@ -5,16 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.playlistmaker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
+import com.example.playlistmaker.media.ui.adapter.PlaylistsAdapter
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
+import kotlinx.coroutines.launch
 
 class PlaylistsFragment : Fragment() {
 
-    private val playlistsViewModel: PlaylistViewModel by viewModel()
-
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var adapter: PlaylistsAdapter
+    private val viewModel: PlaylistsViewModel by viewModel()
 
     companion object {
         fun newInstance(): PlaylistsFragment = PlaylistsFragment()
@@ -31,12 +41,33 @@ class PlaylistsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.recyclerPlaylists.visibility = View.GONE
         binding.imagePlaceholderPlaylists.visibility = View.VISIBLE
         binding.textPlaceholderPlaylists.visibility = View.VISIBLE
-
         binding.refreshButton.setOnClickListener {
-            //логика создания плейлиста!
+            findNavController().navigate(R.id.action_mediaLibrary_to_createPlaylist)
+        }
+
+        adapter = PlaylistsAdapter { playlist -> }
+        binding.recyclerPlaylists.adapter = adapter
+        binding.recyclerPlaylists.layoutManager = GridLayoutManager(requireContext(), 2)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.playlists.collect { list ->
+                    if (list.isEmpty()) {
+                        binding.recyclerPlaylists.visibility = View.GONE
+                        binding.imagePlaceholderPlaylists.visibility = View.VISIBLE
+                        binding.textPlaceholderPlaylists.visibility = View.VISIBLE
+                    } else {
+                        binding.recyclerPlaylists.visibility = View.VISIBLE
+                        binding.imagePlaceholderPlaylists.visibility = View.GONE
+                        binding.textPlaceholderPlaylists.visibility = View.GONE
+                        adapter.submitList(list)
+                    }
+                }
+            }
         }
     }
 

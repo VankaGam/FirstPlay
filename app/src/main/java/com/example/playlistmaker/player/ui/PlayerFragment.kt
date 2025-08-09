@@ -116,8 +116,8 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         val scrimColor = Color.parseColor("#1A1B22")
         overlay.setBackgroundColor(scrimColor)
 
-        val SCRIM_MIN = 0.20f
-        val SCRIM_MAX = 0.60f
+        val SCRIM_MIN = 0.40f
+        val SCRIM_MAX = 0.80f
 
         fun showScrim(a: Float) {
             val x = a.coerceIn(0f, 1f)

@@ -1,7 +1,9 @@
 package com.example.playlistmaker.media.mapper
 
 import com.example.playlistmaker.media.data.dp.PlaylistEntity
+import com.example.playlistmaker.media.data.dp.PlaylistTrackEntity
 import com.example.playlistmaker.media.domain.model.Playlist
+import com.example.playlistmaker.search.domain.model.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -32,4 +34,18 @@ fun Playlist.toEntity(gson: Gson): PlaylistEntity {
         trackIdsJson = json,
         trackCount = trackCount
     )
+
 }
+
+fun Track.toPlaylistTrackEntity() = PlaylistTrackEntity(
+    trackId = trackId.toLong(),
+    trackName = trackName,
+    artistName = artistName,
+    trackTimeMillis = trackTimeMillis,
+    artworkUrl100 = artworkUrl100,
+    collectionName = collectionName,
+    releaseDate = releaseDate,
+    primaryGenreName = primaryGenreName,
+    country = country,
+    previewUrl = previewUrl
+)

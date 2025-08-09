@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <androidx.constraintlayout.widget.ConstraintLayout
+    tools:context=".player.ui.PlayerFragment">
+
+    <ScrollView
         android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_background"
-    android:padding="16dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_background"
+            android:padding="16dp">
 
     <ImageButton
         android:id="@+id/backButton"
@@ -194,3 +201,37 @@
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
+<View
+android:id="@+id/overlay"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#99000000"
+android:visibility="gone"/>
+
+    <!-- BottomSheet со списком и кнопкой «Новый плейлист» -->
+<LinearLayout
+android:id="@+id/playlists_bottom_sheet"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:background="@drawable/bottom_sheet_bg"
+app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+app:behavior_hideable="true"
+app:behavior_peekHeight="360dp">
+
+<com.google.android.material.button.MaterialButton
+    android:id="@+id/btnNewPlaylist"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Новый плейлист"
+    style="?attr/materialButtonOutlinedStyle"
+    android:layout_margin="16dp"/>
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rvPlaylists"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"/>
+</LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>

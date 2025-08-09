@@ -32,12 +32,9 @@ class PlaylistsAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Playlist) {
-            // Имя
             binding.tvName.text = item.name
-            // Кол-во треков с правильным словом
             binding.tvCount.text = formatTracksCount(item.trackCount)
 
-            // Обложка
             val path = item.coverPath
             if (path.isNullOrBlank()) {
                 binding.ivCover.setImageResource(R.drawable.zaglyshka)
@@ -50,7 +47,6 @@ class PlaylistsAdapter(
                 }
             }
 
-            // Клик по карточке (опционально)
             binding.root.setOnClickListener { onClick?.invoke(item) }
         }
 

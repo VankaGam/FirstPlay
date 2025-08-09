@@ -42,24 +42,17 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // начальные состояния заглушек
         binding.recyclerPlaylists.visibility = View.GONE
         binding.imagePlaceholderPlaylists.visibility = View.VISIBLE
         binding.textPlaceholderPlaylists.visibility = View.VISIBLE
-
-        // кнопка "Новый плейлист"
         binding.refreshButton.setOnClickListener {
             findNavController().navigate(R.id.action_mediaLibrary_to_createPlaylist)
         }
 
-        // Recycler + Adapter
-        adapter = PlaylistsAdapter { playlist ->
-            // пока переход на экран плейлиста не нужен по ТЗ
-        }
+        adapter = PlaylistsAdapter { playlist -> }
         binding.recyclerPlaylists.adapter = adapter
         binding.recyclerPlaylists.layoutManager = GridLayoutManager(requireContext(), 2)
 
-        // Подписка на Flow из VM
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.playlists.collect { list ->

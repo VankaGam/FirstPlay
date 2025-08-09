@@ -67,7 +67,6 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
             binding.btnCreatePlaylist.isEnabled = hasTitle
         }
 
-        // стартовое состояние (на всякий случай)
         updateCreateEnabled()
         binding.etPlaylistName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) = updateCreateEnabled()
@@ -75,14 +74,12 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // следим за вводом в поле «Название»
         binding.etPlaylistName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) = updateCreateEnabled()
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // заглушка на «Создать» (позже тут будет реальное сохранение)
         binding.btnCreatePlaylist.setOnClickListener {
             val name = binding.etPlaylistName.text?.toString()?.trim().orEmpty()
             val description = binding.etPlaylistDescription.text?.toString()?.trim().orEmpty()

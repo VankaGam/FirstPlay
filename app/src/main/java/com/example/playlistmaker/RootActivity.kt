@@ -38,6 +38,7 @@ class RootActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isPlayer = destination.id == R.id.playerFragment
+
             binding.bottomNav.visibility  = if (isPlayer) View.GONE else View.VISIBLE
             binding.bottomDivider.visibility = if (isPlayer) View.GONE else View.VISIBLE
             val navHostView = findViewById<View>(R.id.nav_host_fragment)

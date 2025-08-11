@@ -28,4 +28,7 @@ class PlaylistInteractor(
         withContext(io) { repo.removeTrackFromPlaylist(playlistId, trackId) }
 
     suspend fun deletePlaylist(id: Long) = withContext(io) { repo.deletePlaylist(id) }
+
+    suspend fun updateInfo(id: Long, name: String, description: String?, coverPath: String?) =
+        withContext(io) { repo.updateInfo(id, name, description, coverPath) }
 }

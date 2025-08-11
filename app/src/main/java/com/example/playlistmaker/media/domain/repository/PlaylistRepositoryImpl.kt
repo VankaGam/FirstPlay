@@ -26,7 +26,7 @@ class PlaylistRepositoryImpl(
             trackIdsJson = "[]",
             trackCount = 0
         )
-        return playlistDao.insert(entity)          // <-- обращаемся к playlistDao
+        return playlistDao.insert(entity)
     }
 
     override fun observeAll(): Flow<List<Playlist>> {
@@ -43,7 +43,6 @@ class PlaylistRepositoryImpl(
         val trackId = track.trackId.toLong()
         if (ids.contains(trackId)) return false
 
-        // 1) обновляем плейлист в БД
         ids.add(trackId)
         val updated = entity.copy(
             trackIdsJson = gson.toJson(ids),
@@ -68,18 +67,15 @@ class PlaylistRepositoryImpl(
     override suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long) {
         val entity = playlistDao.getById(playlistId) ?: return
 
-        // распарсим список id из JSON
         val type = object : TypeToken<List<Long>>() {}.type
         val ids = (gson.fromJson<List<Long>>(entity.trackIdsJson, type) ?: emptyList()).toMutableList()
 
-        // если этот id есть — удаляем и обновляем плейлист
         if (ids.remove(trackId)) {
             playlistDao.update(entity.copy(
                 trackIdsJson = gson.toJson(ids),
                 trackCount = ids.size
             ))
 
-            // проверим, используется ли этот трек в каких-то других плейлистах
             val allPlaylists = playlistDao.getAll()
             val usedSomewhere = allPlaylists.any { pl ->
                 val list = gson.fromJson<List<Long>>(pl.trackIdsJson, type) ?: emptyList()
@@ -92,17 +88,22 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun deletePlaylist(id: Long) {
-        // удаляем сам плейлист
         playlistDao.deleteById(id)
-
-        // соберём множество id, которые ещё используются в оставшихся плейлистах
         val type = object : TypeToken<List<Long>>() {}.type
         val used = playlistDao.getAll().flatMap { e ->
             gson.fromJson<List<Long>>(e.trackIdsJson, type) ?: emptyList()
         }.toSet()
-
-        // удалим записи треков, которые больше нигде не встречаются
         playlistTrackDao.getAll().forEach { if (it.trackId !in used) playlistTrackDao.deleteById(it.trackId) }
+    }
+
+    override suspend fun updateInfo(id: Long, name: String, description: String?, coverPath: String?) {
+        val entity = playlistDao.getById(id) ?: return
+        val updated = entity.copy(
+            name = name,
+            description = description?.ifBlank { null },
+            coverPath = coverPath ?: entity.coverPath
+        )
+        playlistDao.update(updated)
     }
 
 }

@@ -101,9 +101,9 @@ class PlaylistWorkFragment : Fragment(R.layout.fragment_playlist_work) {
             shareFromMenu()
         }
         menuSheet.findViewById<TextView>(R.id.actionEdit).setOnClickListener {
-            // пока заглушка, сделаем на шаге 5
-            Toast.makeText(requireContext(),"Редактирование позже", Toast.LENGTH_SHORT).show()
             menuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            val b = Bundle().apply { putLong("editPlaylistId", playlistId) }
+            findNavController().navigate(R.id.createPlaylistFragment, b)
         }
         menuSheet.findViewById<TextView>(R.id.actionDelete).setOnClickListener {
             confirmDeletePlaylist()
@@ -138,6 +138,7 @@ class PlaylistWorkFragment : Fragment(R.layout.fragment_playlist_work) {
     override fun onResume() {
         super.onResume()
         (activity as? RootActivity)?.setBottomNavVisible(false)
+        vm.load()
     }
 
     override fun onPause() {
@@ -207,16 +208,17 @@ class PlaylistWorkFragment : Fragment(R.layout.fragment_playlist_work) {
     }
 
     private fun confirmDeletePlaylist() {
+        menuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        val name = vm.header.value?.title.orEmpty()
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Удалить плейлист")
-            .setMessage("Хотите удалить плейлист?")
+            .setMessage("Хотите удалить плейлист «$name»?")
             .setNegativeButton("Нет", null)
             .setPositiveButton("Да") { _, _ ->
                 menuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 lifecycleScope.launch {
-                    vm.deleteCurrentPlaylist() // см. ниже
+                    vm.deleteCurrentPlaylist()
                     Toast.makeText(requireContext(),"Плейлист удалён",Toast.LENGTH_SHORT).show()
-                    findNavController().navigateUp() // вернёмся в Медиатеку
+                    findNavController().navigateUp()
                 }
             }
             .show()

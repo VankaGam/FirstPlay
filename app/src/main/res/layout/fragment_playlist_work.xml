@@ -111,13 +111,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:clickable="true"/>
-
     <LinearLayout
         android:id="@+id/playlists_bottom_sheet"
         android:layout_width="match_parent"
@@ -142,6 +135,13 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
     </LinearLayout>
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:clickable="true"/>
 
     <LinearLayout
         android:id="@+id/menu_bottom_sheet"

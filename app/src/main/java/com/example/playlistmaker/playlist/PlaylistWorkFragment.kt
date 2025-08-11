@@ -32,23 +32,98 @@ class PlaylistWorkFragment : Fragment(R.layout.fragment_playlist_work) {
     private val vm: PlaylistWorkViewModel by viewModel { parametersOf(playlistId) }
     private lateinit var adapter: TracksInPlaylistAdapter
     private lateinit var menuBehavior: BottomSheetBehavior<View>
+    private lateinit var tracksBehavior: BottomSheetBehavior<View>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val overlayTracks = view.findViewById<View>(R.id.overlay_tracks)
         val overlay = view.findViewById<View>(R.id.overlay)
+
+        val scrimColor = android.graphics.Color.parseColor("#1A1B22")
+        overlayTracks.setBackgroundColor(scrimColor)
+        overlay.setBackgroundColor(scrimColor)
+
+        val SCRIM_MIN = 0.40f
+        val SCRIM_MAX = 0.80f
+
+        fun showTracksScrim(a: Float) {
+            val x = a.coerceIn(0f, 1f)
+            overlayTracks.visibility = if (x == 0f) View.GONE else View.VISIBLE
+            overlayTracks.alpha = x
+        }
+
+
         view.findViewById<ImageButton>(R.id.backButton)
             .setOnClickListener { findNavController().navigateUp() }
 
         val sheet = view.findViewById<View>(R.id.playlists_bottom_sheet)
-        BottomSheetBehavior.from(sheet).apply {
+        tracksBehavior = BottomSheetBehavior.from(sheet).apply {
             state = BottomSheetBehavior.STATE_COLLAPSED
             isHideable = false
         }
+
+        tracksBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED,
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        showTracksScrim(0f)
+                        overlayTracks.isClickable = false
+                        overlayTracks.visibility = View.GONE
+                    }
+                    BottomSheetBehavior.STATE_HALF_EXPANDED,
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        showTracksScrim(SCRIM_MAX)
+                        overlayTracks.isClickable = true
+                        overlayTracks.visibility = View.VISIBLE
+                    }
+                }
+                overlayTracks.bringToFront()
+                bottomSheet.bringToFront()
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (slideOffset <= 0f) {
+                    showTracksScrim(0f)
+                    overlayTracks.isClickable = false
+                    overlayTracks.visibility = View.GONE
+                    return
+                }
+                val a = SCRIM_MIN + (SCRIM_MAX - SCRIM_MIN) * slideOffset.coerceIn(0f, 1f)
+                showTracksScrim(a)
+                overlayTracks.isClickable = true
+                if (overlayTracks.visibility != View.VISIBLE) overlayTracks.visibility = View.VISIBLE
+            }
+        })
 
         val menuSheet = view.findViewById<View>(R.id.menu_bottom_sheet)
         menuBehavior = BottomSheetBehavior.from(menuSheet).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
             isHideable = true
         }
+
+        fun showMenuScrim(a: Float) {
+            val x = a.coerceIn(0f, 1f)
+            overlay.visibility = if (x == 0f) View.GONE else View.VISIBLE
+            overlay.alpha = x
+        }
+
+        menuBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> showMenuScrim(0f)
+                    BottomSheetBehavior.STATE_COLLAPSED -> showMenuScrim(SCRIM_MIN)
+                    BottomSheetBehavior.STATE_HALF_EXPANDED,
+                    BottomSheetBehavior.STATE_EXPANDED -> showMenuScrim(SCRIM_MAX)
+                }
+                overlay.bringToFront()
+                bottomSheet.bringToFront()
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val p = slideOffset.coerceIn(0f, 1f)
+                showMenuScrim(SCRIM_MIN + (SCRIM_MAX - SCRIM_MIN) * p)
+            }
+        })
+
+        overlay.setOnClickListener { menuBehavior.state = BottomSheetBehavior.STATE_HIDDEN }
 
         fun showScrim(show: Boolean, alpha: Float = 0.8f) {
             overlay.visibility = if (show) View.VISIBLE else View.GONE
@@ -121,7 +196,6 @@ class PlaylistWorkFragment : Fragment(R.layout.fragment_playlist_work) {
                 tvTime.text = "${h.minutes} минут"
                 tvCount.text = formatTracksCount(h.count)
 
-                // обложка или плейсхолдер
                 val path = h.coverPath
                 if (path.isNullOrBlank()) {
                     ivCover.setImageResource(R.drawable.zaglyshka)

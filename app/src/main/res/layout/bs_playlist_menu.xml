@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bottom_sheet_bg"
@@ -24,38 +25,48 @@
         android:layout_marginStart="13dp"
         android:layout_marginTop="12dp"
         android:scaleType="centerCrop"
-        android:background="@drawable/zaglyshka"
+        android:src="@drawable/zaglyshka"
+        android:background="@drawable/rounded_menu"
+        android:clipToOutline="true"
         app:layout_constraintTop_toBottomOf="@id/handle"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/tvTitle"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="13dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="Best songs 2021"
-        android:fontFamily="@font/ys_display_regular"
-        style="@style/TextStyleItem"
-        android:textSize="16sp"
-        app:layout_constraintTop_toTopOf="@id/ivCover"
-        app:layout_constraintStart_toEndOf="@id/ivCover"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_weight="1"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/actionShare"
+        app:layout_constraintStart_toEndOf="@+id/ivCover"
+        app:layout_constraintTop_toTopOf="@+id/handle">
 
-    <TextView
-        android:id="@+id/tvSubtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="98 треков"
-        android:fontFamily="@font/ys_display_regular"
-        style="@style/TextStyleArtistAndTime"
-        android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="@id/ivCover"
-        app:layout_constraintEnd_toEndOf="@id/tvTitle"
-        app:layout_constraintStart_toStartOf="@id/tvTitle"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/TextStyleItem"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="13dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/ys_display_regular"
+            android:maxLines="1"
+            android:text="Best songs 2021"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivCover"
+            app:layout_constraintTop_toTopOf="@id/ivCover" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            style="@style/TextStyleArtistAndTime"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ys_display_regular"
+            android:text="98 треков"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivCover"
+            app:layout_constraintEnd_toEndOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="@id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/actionShare"

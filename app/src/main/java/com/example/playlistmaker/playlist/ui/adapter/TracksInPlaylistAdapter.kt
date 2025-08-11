@@ -32,7 +32,6 @@ class TracksInPlaylistAdapter(
             artist.text = item.artistName
             time.text = item.getFormattedTrackTime()
 
-            // обложка/плейсхолдер
             val url = item.artworkUrl100.ifBlank { null }
             if (url == null) {
                 iv.setImageResource(R.drawable.zaglyshka)

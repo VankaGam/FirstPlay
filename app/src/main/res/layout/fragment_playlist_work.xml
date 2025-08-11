@@ -9,15 +9,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_background">
+        android:layout_height="match_parent"
+        android:background="#E6E8EB">
 
     <ImageView
         android:id="@+id/zaglyshka"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:src="@drawable/zaglyshka"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,6 +31,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             android:src="@drawable/vector_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:backgroundTint="@android:color/transparent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -91,7 +93,7 @@
             android:id="@+id/sharePlaylist"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@color/color_background"
+            android:background="#E6E8EB"
             android:src="@drawable/shareplaylist"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="16dp"
@@ -103,13 +105,21 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="16dp"
-            android:background="@color/color_background"
+            android:background="#E6E8EB"
             android:src="@drawable/menu"
             android:layout_marginStart="16dp"
             app:layout_constraintStart_toEndOf="@+id/sharePlaylist"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/overlay_tracks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/playlists_bottom_sheet"

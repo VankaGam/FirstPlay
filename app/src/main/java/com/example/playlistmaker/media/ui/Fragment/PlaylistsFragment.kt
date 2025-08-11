@@ -49,7 +49,10 @@ class PlaylistsFragment : Fragment() {
             findNavController().navigate(R.id.action_mediaLibrary_to_createPlaylist)
         }
 
-        adapter = PlaylistsAdapter { playlist -> }
+        adapter = PlaylistsAdapter { playlist ->
+            val bundle = Bundle().apply { putLong("playlistId", playlist.id) }
+            findNavController().navigate(R.id.action_mediaLibrary_to_playlistWork, bundle)
+        }
         binding.recyclerPlaylists.adapter = adapter
         binding.recyclerPlaylists.layoutManager = GridLayoutManager(requireContext(), 2)
 

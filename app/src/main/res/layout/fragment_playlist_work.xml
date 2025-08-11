@@ -111,8 +111,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <!-- BottomSheet со списком треков -->
     <View
         android:id="@+id/overlay"
         android:layout_width="match_parent"
@@ -145,4 +143,20 @@
             android:layout_weight="1"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/menu_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bottom_sheet_bg"
+        android:elevation="0dp"
+        android:translationZ="0dp"
+        android:stateListAnimator="@null"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="383dp"
+        app:behavior_fitToContents="false">
+
+        <include layout="@layout/bs_playlist_menu"/>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

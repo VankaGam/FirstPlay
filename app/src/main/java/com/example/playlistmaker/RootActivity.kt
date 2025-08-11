@@ -39,9 +39,13 @@ class RootActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isPlayer = destination.id == R.id.playerFragment
+            val isPlaylistWork = destination.id == R.id.playlistWorkFragment
+            val hideBottom = isPlayer || isPlaylistWork
 
             binding.bottomNav.visibility  = if (isPlayer) View.GONE else View.VISIBLE
             binding.bottomDivider.visibility = if (isPlayer) View.GONE else View.VISIBLE
+            binding.bottomNav.visibility  = if (hideBottom) View.GONE else View.VISIBLE
+            binding.bottomDivider.visibility = if (hideBottom) View.GONE else View.VISIBLE
             val navHostView = findViewById<View>(R.id.nav_host_fragment)
             val params = navHostView.layoutParams as CoordinatorLayout.LayoutParams
             val marginDp = if (isPlayer) 0 else 57

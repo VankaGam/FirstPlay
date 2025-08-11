@@ -49,3 +49,17 @@ fun Track.toPlaylistTrackEntity() = PlaylistTrackEntity(
     country = country,
     previewUrl = previewUrl
 )
+
+fun PlaylistTrackEntity.toDomain() = Track(
+    trackId = trackId.toInt(),
+    trackName = trackName,
+    artistName = artistName,
+    trackTimeMillis = trackTimeMillis,
+    artworkUrl100 = artworkUrl100 ?: "",
+    collectionName = collectionName,
+    releaseDate = releaseDate,
+    primaryGenreName = primaryGenreName,
+    country = country,
+    previewUrl = previewUrl
+)
+

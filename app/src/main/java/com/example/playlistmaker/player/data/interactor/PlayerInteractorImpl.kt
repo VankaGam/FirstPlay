@@ -31,15 +31,14 @@ class PlayerInteractorImpl(
         player = mediaPlayerFactory.create().apply {
             setDataSource(track.previewUrl)
             prepare()
-            start()
             setOnCompletionListener {
                 _isPlaying.value = false
                 _position.value = 0
                 stopPositionUpdates()
             }
         }
-        _isPlaying.value = true
-        startPositionUpdates()
+        _isPlaying.value = false
+        _position.value = 0
     }
 
     override fun playPause() {

@@ -9,6 +9,7 @@ import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.mediaModule
 import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.di.navigationModule
+import com.example.playlistmaker.di.playlistWorkModule
 import com.example.playlistmaker.settings.domain.repository.SettingsRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
@@ -27,7 +28,8 @@ class App : Application() {
                 viewModelModule,
                 mediaModule,
                 navigationModule,
-                DomainModule
+                DomainModule,
+                playlistWorkModule
             )
         }
 

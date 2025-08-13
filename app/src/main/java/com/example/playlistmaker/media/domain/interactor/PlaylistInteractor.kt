@@ -19,4 +19,16 @@ class PlaylistInteractor(
 
     suspend fun addTrackToPlaylist(playlistId: Long, track: Track): Boolean =
         withContext(io) { repo.addTrackToPlaylist(playlistId, track) }
+
+    suspend fun getById(id: Long): Playlist? = withContext(io) { repo.getById(id) }
+
+    suspend fun getTracksByIds(ids: List<Long>): List<Track> = withContext(io) { repo.getTracksByIds(ids) }
+
+    suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long) =
+        withContext(io) { repo.removeTrackFromPlaylist(playlistId, trackId) }
+
+    suspend fun deletePlaylist(id: Long) = withContext(io) { repo.deletePlaylist(id) }
+
+    suspend fun updateInfo(id: Long, name: String, description: String?, coverPath: String?) =
+        withContext(io) { repo.updateInfo(id, name, description, coverPath) }
 }

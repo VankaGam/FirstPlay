@@ -99,6 +99,14 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentCreatePlaylistBinding.bind(view)
+        val editId = arguments?.getLong("editPlaylistId")?.takeIf { it != 0L }
+
+        if (editId != null) {
+            requireActivity().title = "Редактировать"
+            binding.btnCreatePlaylist.text = "Сохранить"
+
+            viewModel.loadForEdit(editId)
+        }
 
         selectedCoverUri?.let { uri ->
             val radius = resources.getDimensionPixelSize(R.dimen.cover_radius)
@@ -171,6 +179,67 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
             normalHintColor = ContextCompat.getColor(requireContext(), R.color.black)
         )
 
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.editing.collect { pl ->
+                if (pl != null) {
+                    binding.etPlaylistName.setText(pl.name)
+                    binding.etPlaylistDescription.setText(pl.description ?: "")
+                    val path = pl.coverPath
+                    val radius = resources.getDimensionPixelSize(R.dimen.cover_radius)
+                    if (!path.isNullOrBlank()) {
+                        val f = File(path)
+                        if (f.exists()) {
+                            Glide.with(binding.ivCoverPlaceholder)
+                                .load(f)
+                                .transform(CenterCrop(), RoundedCorners(radius))
+                                .placeholder(R.drawable.zaglyshka)
+                                .error(R.drawable.zaglyshka)
+                                .into(binding.ivCoverPlaceholder)
+                        }
+                    }
+                }
+            }
+        }
+
+        binding.btnCreatePlaylist.setOnClickListener {
+            val name = binding.etPlaylistName.text?.toString()?.trim().orEmpty()
+            val description = binding.etPlaylistDescription.text?.toString()?.trim().orEmpty()
+            lifecycleScope.launch {
+                val newCoverPath = selectedCoverUri?.let { uri -> copyImageToAppStorage(uri) }
+                val descOrNull = description.ifBlank { null }
+
+                if (editId == null) {
+                    viewModel.create(
+                        name = name,
+                        description = descOrNull,
+                        coverPath = newCoverPath,
+                        onDone = {
+                            Toast.makeText(requireContext(), "Плейлист «$name» создан", Toast.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+                        },
+                        onError = {
+                            Toast.makeText(requireContext(), "Ошибка сохранения плейлиста", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                } else {
+                    val finalCover = newCoverPath ?: viewModel.editing.value?.coverPath
+                    viewModel.updateInfo(
+                        id = editId,
+                        name = name,
+                        description = descOrNull,
+                        coverPath = finalCover,
+                        onDone = {
+                            Toast.makeText(requireContext(), "Изменения сохранены", Toast.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+                        },
+                        onError = {
+                            Toast.makeText(requireContext(), "Ошибка обновления плейлиста", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            }
+        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -214,6 +283,11 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
     }
 
     private fun attemptExit() {
+        val editId = arguments?.getLong("editPlaylistId")?.takeIf { it != 0L }
+        if (editId != null) {
+            findNavController().popBackStack()
+            return
+        }
         if (hasUnsavedChanges()) {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.dialog_exit_title)

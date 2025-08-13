@@ -28,4 +28,8 @@ https://practicum.yandex.ru/profile/android-developer-plus/</string>
     <string name="dialog_exit_message">Все несохраненные данные будут потеряны</string>
     <string name="dialog_cancel">Отмена</string>
     <string name="dialog_finish">Завершить</string>
+    <string name="back">Назад</string>
+    <string name="share">Поделиться</string>
+    <string name="more">Меню</string>
+    <string name="empty_tracks">В этом плейлисте нет треков</string>
 </resources>

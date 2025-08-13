@@ -9,6 +9,9 @@
     <ImageView
         android:id="@+id/imageView"
         style="@style/IconStyleItem"
+        android:scaleType="centerCrop"
+        android:clipToOutline="true"
+        android:background="@drawable/rounded_menu"
         android:src="@drawable/view_track" />
     <LinearLayout
         style="@style/LinerLayoutStyleTrackAndArtist"

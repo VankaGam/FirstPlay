@@ -15,13 +15,13 @@ import com.example.playlistmaker.search.domain.model.Track
 class TracksInPlaylistAdapter(
     private val onClick: (Track) -> Unit,
     private val onLongClick: (Track) -> Unit
-) : ListAdapter<Track, TracksInPlaylistAdapter.VH>(Diff) {
+) : ListAdapter<Track, TracksInPlaylistAdapter.ViewHolder>(Diff) {
 
     object Diff : DiffUtil.ItemCallback<Track>() {
         override fun areItemsTheSame(a: Track, b: Track) = a.trackId == b.trackId
         override fun areContentsTheSame(a: Track, b: Track) = a == b
     }
-    inner class VH(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val iv = view.findViewById<ImageView>(R.id.imageView)
         private val name = view.findViewById<TextView>(R.id.nameTrack)
         private val artist = view.findViewById<TextView>(R.id.nameArtist)
@@ -47,11 +47,11 @@ class TracksInPlaylistAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_track, parent, false)
-        return VH(v)
+        return ViewHolder(v)
     }
 
-    override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 }

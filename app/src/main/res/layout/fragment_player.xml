@@ -77,13 +77,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <com.example.playlistmaker.player.ui.PlaybackButtonView
             android:id="@+id/playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/play_button"
             android:background="@color/color_background"
             android:enabled="false"
+            app:srcPlay="@drawable/play_button"
+            app:srcPause="@drawable/knob_pause"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

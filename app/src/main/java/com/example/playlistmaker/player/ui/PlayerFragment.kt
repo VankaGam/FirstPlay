@@ -81,9 +81,11 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
                 Glide.with(this@PlayerFragment)
                     .load(st.track.getCoverArtwork())
                     .into(binding.coverArtwork)
-                binding.playButton.setImageResource(
-                    if (st.isPlaying) R.drawable.knob_pause else R.drawable.play_button
-                )
+                binding.playButton.isEnabled = true
+                binding.playButton.setPlaying(st.isPlaying)
+                binding.playButton.setOnToggleListener { isNowPlaying ->
+                    viewModel.playPause()
+                }
                 binding.currentTime.text = formatTime(st.position)
                 binding.addToFavoritesButton.setImageResource(
                     if (st.isFavorite) R.drawable.button_fave_activ
@@ -92,9 +94,6 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
             }
         }
 
-        binding.playButton.setOnClickListener {
-            viewModel.playPause()
-        }
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }

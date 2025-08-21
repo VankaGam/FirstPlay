@@ -167,6 +167,6 @@
         app:behavior_peekHeight="383dp"
         app:behavior_fitToContents="false">
 
-        <include layout="@layout/bs_playlist_menu"/>
+        <include layout="@layout/botton_sheet_playlist_menu"/>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

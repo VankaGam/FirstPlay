@@ -18,6 +18,10 @@ class PlaybackButtonView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    companion object {
+        private const val SIZE_DP = 96
+    }
+
     private var isPlaying = false
 
     private var playDrawable = AppCompatResources.getDrawable(context, android.R.color.transparent)
@@ -69,7 +73,7 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val desired = (96 * resources.displayMetrics.density).toInt()
+        val desired = (SIZE_DP * resources.displayMetrics.density).toInt()
         val w = resolveSize(desired, widthMeasureSpec)
         val h = resolveSize(desired, heightMeasureSpec)
         val side = minOf(w, h)
@@ -96,7 +100,8 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        (if (isPlaying) pauseDrawable else playDrawable)?.draw(canvas)
+        val currentDrawable = if (isPlaying) pauseDrawable else playDrawable
+        currentDrawable?.draw(canvas)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

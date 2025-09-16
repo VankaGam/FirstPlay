@@ -1,14 +1,15 @@
 package com.example.playlistmaker.player.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.media.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.player.domain.interactor.FavoritesInteractor
 import com.example.playlistmaker.player.domain.interactor.PlayerInteractor
+import com.example.playlistmaker.player.service.AudioPlayerBar
+import com.example.playlistmaker.player.service.AudioPlayerService
 import com.example.playlistmaker.search.domain.model.Track
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,6 +31,9 @@ class PlayerViewModel(
     initialTrack: Track
 ) : ViewModel() {
 
+    private var audioPlayerService: AudioPlayerService? = null
+    private var playerBar: AudioPlayerBar? = null
+    private var svcJobs: Job? = null
     private val _state = MutableStateFlow(PlayerState(track = initialTrack))
     val state: StateFlow<PlayerState> = _state.asStateFlow()
 
@@ -95,6 +99,39 @@ class PlayerViewModel(
             }
             _state.update { it.copy(isFavorite = !it.isFavorite) }
         }
+    }
+
+    fun attachService(service: AudioPlayerService) {
+        playerBar = service
+        audioPlayerService = service
+    }
+
+    fun detachService() {
+        playerBar = null
+        svcJobs?.cancel()
+        svcJobs = null
+        audioPlayerService = null
+    }
+
+    fun onPlayPauseClicked() {
+        playerBar?.let { g ->
+            if (g.isPlaying()) g.pause() else g.play()
+            return
+        }
+        playPause()
+    }
+
+    fun onUiVisible() {
+        playerBar?.hideNotification()
+    }
+
+    fun onUiHidden() {
+        playerBar?.let { if (it.isPlaying()) it.showNotification() }
+    }
+
+    fun onScreenClosed() {
+        playerBar?.stop()
+        audioPlayerService?.stop()
     }
 
 }

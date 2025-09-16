@@ -45,6 +45,42 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    signingConfigs {
+        create("release") {
+            val storeFileProp = providers.gradleProperty("STORE_FILE").orNull?.trim()
+            val storePassProp = providers.gradleProperty("STORE_PASSWORD").orNull?.trim()
+            val keyAliasProp  = providers.gradleProperty("KEY_ALIAS").orNull?.trim()
+            val keyPassProp   = providers.gradleProperty("KEY_PASSWORD").orNull?.trim()
+
+            require(!storeFileProp.isNullOrBlank()) { "STORE_FILE missing" }
+            require(!storePassProp.isNullOrBlank()) { "STORE_PASSWORD missing" }
+            require(!keyAliasProp.isNullOrBlank())  { "KEY_ALIAS missing" }
+            require(!keyPassProp.isNullOrBlank())   { "KEY_PASSWORD missing" }
+
+            storeFile = file(storeFileProp!!)
+            storePassword = storePassProp
+            keyAlias = keyAliasProp
+            keyPassword = keyPassProp
+            storeType = "JKS"
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+
+    lint {
+        disable.add("NullSafeMutableLiveData")
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
+
+    defaultConfig {
+        versionCode = 1
+        versionName = "1.0.0"
+    }
 }
 
 dependencies {

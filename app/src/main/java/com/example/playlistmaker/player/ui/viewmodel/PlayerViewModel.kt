@@ -87,12 +87,6 @@ class PlayerViewModel(
         }
     }
 
-    fun prepare(track: Track) = interactor.prepare(track)
-    fun playPause() = interactor.playPause()
-    fun release() = interactor.release()
-
-    override fun onCleared() = interactor.release()
-
     fun onFavoriteClicked() {
         val current = _state.value.track
         viewModelScope.launch {
@@ -132,7 +126,6 @@ class PlayerViewModel(
             if (g.isPlaying()) g.pause() else g.play()
             return
         }
-        playPause()
     }
 
     fun onUiVisible() {

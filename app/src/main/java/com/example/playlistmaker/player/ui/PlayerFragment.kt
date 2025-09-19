@@ -68,11 +68,9 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
     private var audioService: AudioPlayerService? = null
     private var serviceBound = false
     private var lastIsPlaying: Boolean = false
-    private var uiInBackground = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentPlayerBinding.bind(view)
-        viewModel.prepare(initialTrack)
 
         val navController = findNavController()
 
@@ -91,9 +89,6 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
                 binding.playButton.isEnabled = true
                 binding.playButton.setPlaying(st.isPlaying)
                 lastIsPlaying = st.isPlaying
-                if (uiInBackground && !st.isPlaying) {
-                    audioService?.hideNotification()
-                }
                 binding.currentTime.text = formatTime(st.position)
                 binding.addToFavoritesButton.setImageResource(
                     if (st.isFavorite) R.drawable.button_fave_activ

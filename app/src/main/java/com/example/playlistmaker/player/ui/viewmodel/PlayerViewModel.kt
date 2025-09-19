@@ -51,13 +51,17 @@ class PlayerViewModel(
     init {
         interactor.isPlaying
             .onEach { playing ->
-                _state.update { it.copy(isPlaying = playing) }
+                if (playerBar == null) {
+                    _state.update { it.copy(isPlaying = playing) }
+                }
             }
             .launchIn(viewModelScope)
 
         interactor.position
             .onEach { pos ->
-                _state.update { it.copy(position = pos) }
+                if (playerBar == null) {
+                    _state.update { it.copy(position = pos) }
+                }
             }
             .launchIn(viewModelScope)
 
@@ -104,9 +108,19 @@ class PlayerViewModel(
     fun attachService(service: AudioPlayerService) {
         playerBar = service
         audioPlayerService = service
+        service.setPlayerStateListener(object : AudioPlayerBar.PlayerStateListener {
+            override fun onStateChanged(
+                state: AudioPlayerService.ServicePlayerState,
+                progressMs: Long
+            ) {
+                val playing = (state == AudioPlayerService.ServicePlayerState.Playing)
+                _state.update { it.copy(isPlaying = playing, position = progressMs.toInt()) }
+            }
+        })
     }
 
     fun detachService() {
+        playerBar?.setPlayerStateListener(null)
         playerBar = null
         svcJobs?.cancel()
         svcJobs = null

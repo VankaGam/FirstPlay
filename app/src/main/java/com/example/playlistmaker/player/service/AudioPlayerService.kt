@@ -19,6 +19,13 @@ class AudioPlayerService : Service(), AudioPlayerBar {
 
     enum class ServicePlayerState { Idle, Preparing, Playing, Paused, Completed, Error }
 
+    private var callback: AudioPlayerBar.PlayerStateListener? = null
+    override fun setPlayerStateListener(listener: AudioPlayerBar.PlayerStateListener?) {
+        callback = listener
+    }
+    private fun notifyCallback() {
+        callback?.onStateChanged(_state.value, _progressMs.value)
+    }
     private var mediaPlayer: android.media.MediaPlayer? = null
     private val scope = kotlinx.coroutines.CoroutineScope(
         kotlinx.coroutines.SupervisorJob() + kotlinx.coroutines.Dispatchers.Main.immediate
@@ -85,18 +92,26 @@ class AudioPlayerService : Service(), AudioPlayerBar {
         this.url = url; this.artist = artist; this.title = title
         mediaPlayer?.release()
         mediaPlayer = android.media.MediaPlayer().apply {
-            setOnPreparedListener { _state.value = ServicePlayerState.Paused }
+            setOnPreparedListener {
+                _state.value = ServicePlayerState.Paused
+                _progressMs.value = 0L
+                notifyCallback()
+            }
             setOnCompletionListener {
                 _state.value = ServicePlayerState.Completed
                 _progressMs.value = 0L
                 hideNotification()
                 stopProgress()
+                notifyCallback()
             }
             setOnErrorListener { _, _, _ ->
                 _state.value = ServicePlayerState.Error
-                stopProgress(); false
+                stopProgress()
+                notifyCallback()
+                false
             }
             _state.value = ServicePlayerState.Preparing
+            notifyCallback()
             setDataSource(url)
             prepareAsync()
         }
@@ -105,12 +120,14 @@ class AudioPlayerService : Service(), AudioPlayerBar {
     override fun play() {
         mediaPlayer?.start() ?: return
         _state.value = ServicePlayerState.Playing
+        notifyCallback()
         startProgress()
     }
 
     override fun pause() {
         mediaPlayer?.takeIf { it.isPlaying }?.pause()
         _state.value = ServicePlayerState.Paused
+        notifyCallback()
         stopProgress()
     }
 
@@ -118,6 +135,7 @@ class AudioPlayerService : Service(), AudioPlayerBar {
         mediaPlayer?.let { if (it.isPlaying) it.stop() }
         _state.value = ServicePlayerState.Idle
         _progressMs.value = 0L
+        notifyCallback()
         stopProgress()
         hideNotification()
     }
@@ -130,6 +148,7 @@ class AudioPlayerService : Service(), AudioPlayerBar {
             val mp = mediaPlayer ?: return@launch
             while (isActive && mp.isPlaying) {
                 _progressMs.value = mp.currentPosition.toLong()
+                notifyCallback()
                 kotlinx.coroutines.delay(300)
             }
         }
@@ -140,6 +159,14 @@ class AudioPlayerService : Service(), AudioPlayerBar {
     }
 
     override fun showNotification() {
+        if (_state.value != ServicePlayerState.Playing) return
+
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            val granted = androidx.core.content.ContextCompat.checkSelfPermission(
+                this, android.Manifest.permission.POST_NOTIFICATIONS
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            if (!granted) return
+        }
         val notification = buildNotification(artist, title)
         ServiceCompat.startForeground(
             this,

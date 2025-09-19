@@ -12,4 +12,12 @@ interface AudioPlayerBar {
     fun progressMs(): StateFlow<Long>
     fun showNotification()
     fun hideNotification()
+    fun setPlayerStateListener(listener: PlayerStateListener?)
+
+    interface PlayerStateListener {
+        fun onStateChanged(
+            state: AudioPlayerService.ServicePlayerState,
+            progressMs: Long
+        )
+    }
 }

@@ -237,12 +237,20 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
 
     override fun onStart() {
         super.onStart()
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            val perm = android.Manifest.permission.POST_NOTIFICATIONS
+            val granted = androidx.core.content.ContextCompat.checkSelfPermission(
+                requireContext(), perm
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            if (!granted) {
+                requestNotifPermission.launch(perm)
+            }
+        }
         viewModel.onUiVisible()
     }
 
     override fun onStop() {
         super.onStop()
-        ensureNotifPermissionIfNeeded()
         viewModel.onUiHidden()
     }
 

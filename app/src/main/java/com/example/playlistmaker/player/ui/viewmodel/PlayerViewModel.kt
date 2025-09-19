@@ -99,9 +99,8 @@ class PlayerViewModel(
         }
     }
 
-    fun attachService(service: AudioPlayerService) {
+    fun attachService(service: AudioPlayerBar) {
         playerBar = service
-        audioPlayerService = service
         service.setPlayerStateListener(object : AudioPlayerBar.PlayerStateListener {
             override fun onStateChanged(
                 state: AudioPlayerService.ServicePlayerState,

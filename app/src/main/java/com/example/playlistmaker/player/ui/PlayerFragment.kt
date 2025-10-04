@@ -6,29 +6,24 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.graphics.ColorUtils
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenStateAtLeast
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.RootActivity
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
+import com.example.playlistmaker.player.service.AudioPlayerService
 import com.example.playlistmaker.player.ui.PlaylistsBottomSheetAdapter.PlaylistsBottomSheetAdapter
 import com.example.playlistmaker.player.ui.viewmodel.PlayerState
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -47,6 +42,14 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         }
     }
 
+    private val requestNotifPermission = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted && serviceBound && lastIsPlaying) {
+            audioService?.showNotification()
+        }
+    }
+
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
     private val initialTrack: Track by lazy {
@@ -62,10 +65,12 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         val host = fm.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
         return host?.navController
     }
+    private var audioService: AudioPlayerService? = null
+    private var serviceBound = false
+    private var lastIsPlaying: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentPlayerBinding.bind(view)
-        viewModel.prepare(initialTrack)
 
         val navController = findNavController()
 
@@ -83,9 +88,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
                     .into(binding.coverArtwork)
                 binding.playButton.isEnabled = true
                 binding.playButton.setPlaying(st.isPlaying)
-                binding.playButton.setOnToggleListener { isNowPlaying ->
-                    viewModel.playPause()
-                }
+                lastIsPlaying = st.isPlaying
                 binding.currentTime.text = formatTime(st.position)
                 binding.addToFavoritesButton.setImageResource(
                     if (st.isFavorite) R.drawable.button_fave_activ
@@ -154,7 +157,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         }
 
         btnNew.setOnClickListener {
-            val cb = object : BottomSheetBehavior.BottomSheetCallback() {
+            val callBack = object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                         bottomSheetBehavior.removeBottomSheetCallback(this)
@@ -165,7 +168,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             }
-            bottomSheetBehavior.addBottomSheetCallback(cb)
+            bottomSheetBehavior.addBottomSheetCallback(callBack)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
@@ -189,6 +192,17 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
             }
         }
 
+        binding.playButton.setOnToggleListener {
+            viewModel.onPlayPauseClicked()
+        }
+
+        val intent = android.content.Intent(requireContext(), AudioPlayerService::class.java).apply {
+            putExtra(AudioPlayerService.EXTRA_URL, initialTrack.previewUrl ?: "")
+            putExtra(AudioPlayerService.EXTRA_ARTIST, initialTrack.artistName)
+            putExtra(AudioPlayerService.EXTRA_TITLE, initialTrack.trackName)
+        }
+        requireContext().bindService(intent, serviceConnection, android.content.Context.BIND_AUTO_CREATE)
+
     }
 
     private fun formatTime(ms: Int): String {
@@ -198,8 +212,12 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
     }
 
     override fun onDestroyView() {
+        viewModel.onScreenClosed()
+        if (serviceBound) {
+            requireContext().unbindService(serviceConnection)
+            serviceBound = false
+        }
         super.onDestroyView()
-        _binding = null
     }
 
     override fun onResume() {
@@ -210,6 +228,89 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
     override fun onPause() {
         (activity as? RootActivity)?.setBottomNavVisible(true)
         super.onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            val perm = android.Manifest.permission.POST_NOTIFICATIONS
+            val granted = androidx.core.content.ContextCompat.checkSelfPermission(
+                requireContext(), perm
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            if (!granted) {
+                requestNotifPermission.launch(perm)
+            }
+        }
+        viewModel.onUiVisible()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.onUiHidden()
+    }
+
+    private val serviceConnection = object : android.content.ServiceConnection {
+        override fun onServiceConnected(
+            name: android.content.ComponentName?, binder: android.os.IBinder?
+        ) {
+            val service = (binder as AudioPlayerService.AudioBinder).getService()
+            audioService = service
+            serviceBound = true
+            viewModel.attachService(service)
+            service.prepare(
+                initialTrack.previewUrl ?: "",
+                initialTrack.artistName,
+                initialTrack.trackName
+            )
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    service.state().collect { st ->
+                        val playing = (st == AudioPlayerService.ServicePlayerState.Playing)
+                        binding.playButton.setPlaying(playing)
+                        lastIsPlaying = playing
+                        if (st == AudioPlayerService.ServicePlayerState.Completed ||
+                            st == AudioPlayerService.ServicePlayerState.Idle
+                        ) {
+                            binding.currentTime.text = "00:00"
+                        }
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    service.progressMs().collect { ms ->
+                        binding.currentTime.text = formatMs(ms)
+                    }
+                }
+            }
+        }
+
+        override fun onServiceDisconnected(name: android.content.ComponentName?) {
+            serviceBound = false
+            audioService = null
+            viewModel.detachService()
+        }
+    }
+
+    private fun ensureNotifPermissionIfNeeded() {
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            val perm = android.Manifest.permission.POST_NOTIFICATIONS
+            if (androidx.core.content.ContextCompat.checkSelfPermission(
+                    requireContext(), perm
+                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
+                requestNotifPermission.launch(perm)
+            }
+        }
+    }
+
+    private fun formatMs(ms: Long): String {
+        val total = ms / 1000
+        val m = total / 60
+        val s = total % 60
+        return "%02d:%02d".format(m, s)
     }
 
 }

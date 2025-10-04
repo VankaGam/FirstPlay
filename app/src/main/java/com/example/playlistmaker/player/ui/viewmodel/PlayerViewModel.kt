@@ -1,14 +1,15 @@
 package com.example.playlistmaker.player.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.media.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.player.domain.interactor.FavoritesInteractor
 import com.example.playlistmaker.player.domain.interactor.PlayerInteractor
+import com.example.playlistmaker.player.service.AudioPlayerBar
+import com.example.playlistmaker.player.service.AudioPlayerService
 import com.example.playlistmaker.search.domain.model.Track
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,6 +31,9 @@ class PlayerViewModel(
     initialTrack: Track
 ) : ViewModel() {
 
+    private var audioPlayerService: AudioPlayerService? = null
+    private var playerBar: AudioPlayerBar? = null
+    private var svcJobs: Job? = null
     private val _state = MutableStateFlow(PlayerState(track = initialTrack))
     val state: StateFlow<PlayerState> = _state.asStateFlow()
 
@@ -47,13 +51,17 @@ class PlayerViewModel(
     init {
         interactor.isPlaying
             .onEach { playing ->
-                _state.update { it.copy(isPlaying = playing) }
+                if (playerBar == null) {
+                    _state.update { it.copy(isPlaying = playing) }
+                }
             }
             .launchIn(viewModelScope)
 
         interactor.position
             .onEach { pos ->
-                _state.update { it.copy(position = pos) }
+                if (playerBar == null) {
+                    _state.update { it.copy(position = pos) }
+                }
             }
             .launchIn(viewModelScope)
 
@@ -79,12 +87,6 @@ class PlayerViewModel(
         }
     }
 
-    fun prepare(track: Track) = interactor.prepare(track)
-    fun playPause() = interactor.playPause()
-    fun release() = interactor.release()
-
-    override fun onCleared() = interactor.release()
-
     fun onFavoriteClicked() {
         val current = _state.value.track
         viewModelScope.launch {
@@ -95,6 +97,47 @@ class PlayerViewModel(
             }
             _state.update { it.copy(isFavorite = !it.isFavorite) }
         }
+    }
+
+    fun attachService(service: AudioPlayerBar) {
+        playerBar = service
+        service.setPlayerStateListener(object : AudioPlayerBar.PlayerStateListener {
+            override fun onStateChanged(
+                state: AudioPlayerService.ServicePlayerState,
+                progressMs: Long
+            ) {
+                val playing = (state == AudioPlayerService.ServicePlayerState.Playing)
+                _state.update { it.copy(isPlaying = playing, position = progressMs.toInt()) }
+            }
+        })
+    }
+
+    fun detachService() {
+        playerBar?.setPlayerStateListener(null)
+        playerBar = null
+        svcJobs?.cancel()
+        svcJobs = null
+        audioPlayerService = null
+    }
+
+    fun onPlayPauseClicked() {
+        playerBar?.let { g ->
+            if (g.isPlaying()) g.pause() else g.play()
+            return
+        }
+    }
+
+    fun onUiVisible() {
+        playerBar?.hideNotification()
+    }
+
+    fun onUiHidden() {
+        playerBar?.let { if (it.isPlaying()) it.showNotification() }
+    }
+
+    fun onScreenClosed() {
+        playerBar?.stop()
+        audioPlayerService?.stop()
     }
 
 }

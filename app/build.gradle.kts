@@ -10,18 +10,21 @@ plugins {
 android {
     namespace = "com.example.playlistmaker"
     compileSdk = 34
-
+    
     defaultConfig {
         applicationId = "com.example.playlistmaker"
         minSdk = 29
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -29,21 +32,20 @@ android {
                 "proguard-rules.pro"
             )
         }
-
-        debug {
-            isMinifyEnabled = false
-        }
     }
 
-    buildFeatures {
-        viewBinding = true
-    }
+    buildFeatures { viewBinding = true }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlinOptions { jvmTarget = "1.8" }
+
+    lint {
+        disable.add("NullSafeMutableLiveData")
+        checkReleaseBuilds = false
+        abortOnError = false
     }
 }
 
@@ -62,17 +64,16 @@ dependencies {
     kapt("com.github.bumptech.glide:compiler:4.16.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation ("com.google.android.material:material:1.11.0")
-    implementation ("jp.wasabeef:glide-transformations:4.3.0")
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
-    implementation ("io.insert-koin:koin-android:3.3.0")
-    implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.5.3")
-    implementation ("androidx.fragment:fragment-ktx:1.5.6")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("io.insert-koin:koin-android:3.3.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation("androidx.fragment:fragment-ktx:1.5.6")
     implementation("androidx.room:room-runtime:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")

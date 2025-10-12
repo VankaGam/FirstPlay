@@ -6,6 +6,7 @@ import com.example.playlistmaker.di.DomainModule
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.repositoryModule
 import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.mediaLibraryComposeModule
 import com.example.playlistmaker.di.mediaModule
 import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.di.navigationModule
@@ -29,7 +30,8 @@ class App : Application() {
                 mediaModule,
                 navigationModule,
                 DomainModule,
-                playlistWorkModule
+                playlistWorkModule,
+                mediaLibraryComposeModule
             )
         }
 

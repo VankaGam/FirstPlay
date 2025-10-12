@@ -1,14 +1,20 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.media.domain.interactor.PlaylistInteractor
+import com.example.playlistmaker.media.ui.MediaLibraryViewModel
+import com.example.playlistmaker.media.ui.PlaylistUi
 import com.example.playlistmaker.media.ui.viewmodel.CreatePlaylistViewModel
 import com.example.playlistmaker.media.ui.viewmodel.FavoritesViewModel
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistViewModel
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
-import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
+import com.example.playlistmaker.player.domain.interactor.FavoritesInteractor
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
+import kotlinx.coroutines.flow.first
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val viewModelModule = module {
@@ -20,7 +26,6 @@ val viewModelModule = module {
             clearHistoryUseCase = get()
         )
     }
-
 
     viewModel {
         SettingsViewModel(
@@ -40,17 +45,8 @@ val viewModelModule = module {
         )
     }
 
-    viewModel {
-        FavoritesViewModel(
-            favoritesInteractor = get()
-        )
-    }
+    viewModel { FavoritesViewModel(favoritesInteractor = get()) }
+    viewModel { CreatePlaylistViewModel(get()) }
+    viewModel { PlaylistsViewModel(get()) }
 
-    viewModel {
-        CreatePlaylistViewModel(get())
-    }
-
-    viewModel {
-        PlaylistsViewModel(get())
-    }
 }

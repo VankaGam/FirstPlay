@@ -5,62 +5,60 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentMediaLibraryBinding
-import com.example.playlistmaker.media.ui.adapter.MediaLibraryPagerAdapter
-import com.google.android.material.tabs.TabLayoutMediator
+import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.ui.theme.AppTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaLibraryFragment : Fragment() {
 
-    companion object {
-        fun newInstance(): MediaLibraryFragment = MediaLibraryFragment()
-    }
-
-    private var _binding: FragmentMediaLibraryBinding? = null
-    private val binding get() = _binding!!
-
-    private val STATE_KEY_SELECTED_TAB = "STATE_SELECTED_TAB"
+    private val vm: MediaLibraryViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMediaLibraryBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val state by vm.state.collectAsStateWithLifecycle()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.viewPager.adapter = MediaLibraryPagerAdapter(
-            fragmentManager = childFragmentManager,
-            lifecycle = viewLifecycleOwner.lifecycle
-        )
-
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> getString(R.string.tab_favorites)
-                else -> getString(R.string.tab_playlists)
+                AppTheme {
+                    MediaLibraryScreen(
+                        state = state,
+                        onTabSelect = vm::onTabSelected,
+                        onTrackClick = { track: Track ->
+                            findNavController().navigate(
+                                R.id.playerFragment,
+                                Bundle().apply { putSerializable("track", track) }
+                            )
+                        },
+                        onPlaylistClick = { playlistUi ->
+                            findNavController().navigate(
+                                R.id.action_mediaLibrary_to_playlistWork,
+                                bundleOf("playlistId" to playlistUi.id)
+                            )
+                        },
+                        onCreatePlaylistClick = {
+                            findNavController().navigate(R.id.action_mediaLibrary_to_createPlaylist)
+                        },
+                        emptyFavoritesImage = R.drawable.error_search,
+                        emptyPlaylistsImage = R.drawable.error_search
+                    )
+                }
             }
-        }.attach()
-
-        if (savedInstanceState != null) {
-            val savedTab = savedInstanceState.getInt(STATE_KEY_SELECTED_TAB, 0)
-            binding.viewPager.currentItem = savedTab
         }
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        _binding?.viewPager?.let { vp ->
-            outState.putInt(STATE_KEY_SELECTED_TAB, vp.currentItem)
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onResume() {
+        super.onResume()
+        vm.reload()
     }
 }

@@ -32,4 +32,12 @@ https://practicum.yandex.ru/profile/android-developer-plus/</string>
     <string name="share">Поделиться</string>
     <string name="more">Меню</string>
     <string name="empty_tracks">В этом плейлисте нет треков</string>
+    <string name="media_library_title">Медиатека</string>
+    <string name="create_playlist">Новый плейлист</string>
+    <string name="media_empty_library">Ваша медиатека пуста</string>
+    <string name="media_empty_playlists">Вы не создали ни одного плейлиста</string>
+    <string name="playlist_tracks_count">%1$d треков</string>
+    <string name="no_internet_message">Нет подключения к интернету</string>
+    <string name="search_hint">подсказка</string>
+    search_hint
 </resources>

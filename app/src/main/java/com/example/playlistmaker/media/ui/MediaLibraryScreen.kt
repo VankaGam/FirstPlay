@@ -134,7 +134,7 @@ private fun FavoritesTab(
     emptyText: String
 ) {
     if (items.isEmpty()) {
-        EmptyState(image = emptyImage, message = emptyText)
+        FavoritesEmptyState(image = emptyImage, message = emptyText)
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -165,8 +165,8 @@ private fun TrackRowLibrary(track: Track, onClick: (Track) -> Unit) {
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(56.dp)
-                .clip(RoundedCornerShape(6.dp))
+                .size(45.dp)
+                .clip(RoundedCornerShape(3.dp))
         )
         Spacer(Modifier.width(12.dp))
 
@@ -352,11 +352,44 @@ private fun PlaylistCard(item: PlaylistUi, onClick: () -> Unit) {
 private fun EmptyState(@DrawableRes image: Int, message: String) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .fillMaxSize()
+            .padding(horizontal = 24.dp)
+            .padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(painter = painterResource(id = image), contentDescription = null, modifier = Modifier.size(120.dp))
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = message,
+            textAlign = TextAlign.Center,
+            style = LocalTextStyle.current.copy(
+                fontFamily = YSDisplay,
+                fontWeight = FontWeight.Medium,
+                fontSize = 19.sp,
+                lineHeight = 19.sp,
+                color = colorResource(R.color.black)
+            )
+        )
+    }
+}
+
+@Composable
+private fun FavoritesEmptyState(
+    @DrawableRes image: Int,
+    message: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp)
+            .padding(top = 106.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = image),
+            contentDescription = null,
+            modifier = Modifier.size(120.dp)
+        )
         Spacer(Modifier.height(16.dp))
         Text(
             text = message,
